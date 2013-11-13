@@ -39,8 +39,17 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	// session
 	private SessionState sessionState;
 
+	private final Object syncLock = new Object();
 	public SessionState getSessionState() {
-		return sessionState;
+		synchronized (syncLock) {
+			return sessionState;
+		}
+	}
+	
+	private void setSessionState(SessionState sessionState){
+		synchronized (syncLock) {
+			this.sessionState = sessionState;
+		}
 	}
 
 	private Logger logger;
@@ -148,7 +157,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void start(ContextWrapper contextWrapper, Long applicationId, String userId) {
 		try {
-			if (sessionState == SessionState.STARTED || sessionState == SessionState.PAUSED) {
+			if (getSessionState() == SessionState.STARTED || getSessionState() == SessionState.PAUSED) {
 				return;
 			}
 			
@@ -159,7 +168,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			
 			this.userId = userId;
 
-			sessionState = SessionState.STARTED;
+			setSessionState(SessionState.STARTED);
 			this.contextWrapper = contextWrapper;
 			
 //TODO: 	refactor for push settings
@@ -225,7 +234,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			cacheFile.setContext(contextWrapper.getContext());			
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not start session");
-			sessionState = SessionState.NOT_STARTED;
+			setSessionState(SessionState.NOT_STARTED);
 		}
 	}
 
@@ -247,7 +256,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			Runnable writeTask = cacheFile.writeSetToFile(unprocessUrls);
 			util.startTaskOnBackgroundThread(writeTask);
 			
-			sessionState = SessionState.PAUSED;
+			setSessionState(SessionState.PAUSED);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not pause the session");
 		}
@@ -255,7 +264,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void resume() {
 		try {
-			if (sessionState != SessionState.PAUSED || applicationId == null) {
+			if (getSessionState() != SessionState.PAUSED || applicationId == null) {
 				return;
 			}
 
@@ -279,7 +288,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			Runnable readTask = cacheFile.readSetFromFile(handler);
 			util.startTaskOnBackgroundThread(readTask);
 
-			sessionState = SessionState.STARTED;
+			setSessionState(SessionState.STARTED);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not resume the session");
 		}
