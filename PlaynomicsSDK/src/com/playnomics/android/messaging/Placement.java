@@ -33,6 +33,8 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 	}
 
 	private boolean shouldRender;
+
+	
 	private boolean impressionLogged;
 
 	private Util util;
@@ -51,17 +53,17 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 		return placementName;
 	}
 
-	private Object sycnLock = new Object();
+	private Object sycnLockState = new Object();
 	private PlacementState state;
 
 	public PlacementState getState() {
-		synchronized(sycnLock){
+		synchronized(sycnLockState){
 			return state;
 		}
 	}
 
 	public void setState(PlacementState state) {
-		synchronized(sycnLock){
+		synchronized(sycnLockState){
 			this.state = state;
 		}
 	}
@@ -91,8 +93,9 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 	}
 
 	public void updatePlacementData(HtmlAd htmlAd) {
-		this.htmlAd = htmlAd;
+		//do this first
 		setState(PlacementState.LOAD_COMPLETE);
+		this.htmlAd = htmlAd;
 		impressionLogged = false;
 		if (shouldRender) {
 			loadWebView();
@@ -101,11 +104,12 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 
 	public void show(final Activity activity,
 			IPlaynomicsPlacementDelegate delegate) {
+		
+		logger.log(LogLevel.DEBUG, "Showing on THREAD %d", Thread.currentThread().getId());
 		this.delegate = delegate;
 		this.activity = activity;
-
+		
 		shouldRender = true;
-
 		if (getState() == PlacementState.LOAD_COMPLETE) {
 			loadWebView();
 		} else if (getState() == PlacementState.LOAD_FAILED) {
@@ -127,8 +131,9 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 	}
 
 	public void hide() {
-		removeFromView();
+		//do this first for synchronization
 		setState(PlacementState.NOT_LOADED);
+		removeFromView();
 		shouldRender = false;
 		observer.onPlacementDisposed(activity, this);
 	}
