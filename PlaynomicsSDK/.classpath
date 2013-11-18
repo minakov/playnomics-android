@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/jaredjenkins/Projects/mobile/playnomics-android/PlaynomicsSDK/lib/google-play-services.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
