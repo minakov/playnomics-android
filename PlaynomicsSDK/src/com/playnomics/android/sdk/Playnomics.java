@@ -163,4 +163,9 @@ public class Playnomics {
 		Session session = getInstance();
 		session.hidePlacement(placementName);
 	}
+	
+	public static void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate){
+		Session session = getInstance();
+		session.enablePushNotifications(pushConfig, notificationDelegate);
+	}
 }

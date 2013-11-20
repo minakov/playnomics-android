@@ -8,10 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
+import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.sdk.Playnomics;
 import com.playnomics.android.util.Logger.LogLevel;
 
-public class PlaynomicsTestAppActivity extends Activity {
+public class PlaynomicsTestAppActivity 
+	extends Activity 
+	implements IGoogleCloudMessageConfig, IPushNotificationDelegate {
 	
 	private static boolean preloaded = false;
 	
@@ -24,6 +29,7 @@ public class PlaynomicsTestAppActivity extends Activity {
 		Playnomics.setLogLevel(LogLevel.VERBOSE);
 		//Playnomics.setTestMode(false);
 		Playnomics.start(this, applicationId);
+		Playnomics.enablePushNotifications(this, this);
 		
 		if(!preloaded){
 			//only preload once
@@ -87,5 +93,47 @@ public class PlaynomicsTestAppActivity extends Activity {
 	private void setupPlacement (String placementName){
 		RichDataFrameDelegate delegate = new RichDataFrameDelegate(placementName, getApplicationContext());
 		Playnomics.showPlacement(placementName, this, delegate);
+	}
+
+	@Override
+	public Class<?> getNotificationDestination() {
+		return PlaynomicsTestAppActivity.class;
+	}
+
+	@Override
+	public int getNotificationIcon() {
+		return R.drawable.ic_launcher;
+	}
+
+	@Override
+	public String getSenderId() {
+		return "463115531919";
+	}
+
+	@Override
+	public void onPushRegistrationSuccess(String registrationId) {
+		Log.d(this.getClass().getName(), String.format("Registered device %s", registrationId));
+	}
+
+	@Override
+	public void onPushRegistrationFailure() {
+		Log.e(this.getClass().getName(), "Failed to register device");
+	}
+
+	@Override
+	public void onPushRegistrationFailure(Exception ex) {
+		Log.e(this.getClass().getName(), "Failed to register device", ex);
+	}
+
+	@Override
+	public void onPushRegistrationFailure(int errorCode) {
+		final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+		Log.e(this.getClass().getName(), "Failed to register device, GooglePlayServices is out of date");
+		
+		if (GooglePlayServicesUtil.isUserRecoverableError(errorCode)) {
+            GooglePlayServicesUtil.getErrorDialog(errorCode, this,
+                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
+        }
+		
 	}
 }

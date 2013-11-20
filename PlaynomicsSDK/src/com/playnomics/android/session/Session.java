@@ -1,7 +1,6 @@
 package com.playnomics.android.session;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -10,6 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.playnomics.android.client.IEventQueue;
 import com.playnomics.android.client.IEventWorker;
 import com.playnomics.android.client.IHttpConnectionFactory;
@@ -23,7 +24,12 @@ import com.playnomics.android.events.ImplicitEvent;
 import com.playnomics.android.events.TransactionEvent;
 import com.playnomics.android.events.UserInfoEvent;
 import com.playnomics.android.messaging.MessagingManager;
+import com.playnomics.android.push.GcmManager;
+import com.playnomics.android.push.GcmManager.ICloudMessagingHandler;
+import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
 import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
+import com.playnomics.android.sdk.IPushConfig;
+import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.util.CacheFile;
 import com.playnomics.android.util.CacheFile.ICacheFileHandler;
 import com.playnomics.android.util.ContextWrapper;
@@ -35,7 +41,7 @@ import com.playnomics.android.util.Logger.LogLevel;
 import com.playnomics.android.util.Util;
 
 public class Session implements SessionStateMachine, TouchEventHandler,
-		HeartBeatHandler, ICallbackProcessor {
+		HeartBeatHandler, ICallbackProcessor, ICloudMessagingHandler {
 	// session
 	private SessionState sessionState;
 
@@ -62,7 +68,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	private IHeartBeatProducer producer;
 	private MessagingManager messagingManager;
 	private CacheFile cacheFile;
-	// session data
+	//push notifications
+	
+	private IPushNotificationDelegate notificationDelegate;
+	
+	//session data
 	private Long applicationId;
 
 	public Long getApplicationId() {
@@ -107,14 +117,8 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	private AtomicInteger sequence;
 	private AtomicInteger touchEvents;
-	private AtomicInteger allTouchEvents;
-	//TODO: push notifications
-	//private boolean enablePushNotifications;
-
-//	public void setEnabledPushNotifications(boolean value) {
-//		enablePushNotifications = value;
-//	}
-
+	private AtomicInteger allTouchEvents;	
+	
 	public void setOverrideEventsUrl(String eventsUrl){
 		config.setOverrideEventsUrl(eventsUrl);
 	}
@@ -146,7 +150,56 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		this.messagingManager.setSession(this);
 		this.cacheFile = cacheFile;
 	}
-
+	
+	public void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate){
+		try{
+			assertSessionStarted();
+		
+			this.notificationDelegate = notificationDelegate;
+			
+			if(pushConfig instanceof IGoogleCloudMessageConfig){			
+				
+				IGoogleCloudMessageConfig gcmConfig = (IGoogleCloudMessageConfig) pushConfig;
+				if(util.isGooglePlaySdkAvailable()){
+					//Google Cloud Messaging 
+					if(Util.stringIsNullOrEmpty(contextWrapper.getPushRegistrationId()) 
+							|| contextWrapper.pushSettingsOutdated()){
+						//settings are out-dated, so we need to get a new registration ID
+						int resultCode = util.getGooglePlayServiceStatus(contextWrapper.getContext());
+						
+						if (resultCode != ConnectionResult.SUCCESS) {
+					    	if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+					    		logger.log(LogLevel.WARNING, "Google Play Services are not up-to-date on this device.");
+					    		notificationDelegate.onPushRegistrationFailure(resultCode);
+					    		
+//					    		logger.log(LogLevel.WARNING, "Google Play Services are not up to date on this device.");
+//					        	GooglePlayServicesUtil.getErrorDialog(resultCode, context,
+//					            		PLAY_SERVICES_RESOLUTION_REQUEST).show();
+					        } else {
+					            logger.log(LogLevel.ERROR, "Google Play Services are not available on this device.");
+					            notificationDelegate.onPushRegistrationFailure();
+					        }
+					    	return;
+					    }
+						
+						GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
+						Runnable pushRegistrationTask = manager.createRegistrationTask(contextWrapper.getContext());
+						util.startTaskOnBackgroundThread(pushRegistrationTask);
+					}
+				}
+			}
+		} catch(Exception ex){
+			
+		}
+	}
+	
+	public void start(ContextWrapper contextWrapper, Long applicationId, String userId, String pushSenderId) {
+		start(contextWrapper, applicationId, userId);
+		if(getSessionState() == SessionState.STARTED){
+			
+		}
+	}
+	
 	public void start(ContextWrapper contextWrapper, Long applicationId, String userId) {
 		try {
 			if (getSessionState() == SessionState.STARTED || getSessionState() == SessionState.PAUSED) {
@@ -163,10 +216,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			setSessionState(SessionState.STARTED);
 			this.contextWrapper = contextWrapper;
 			
-//TODO: 	refactor for push settings
-//			boolean settingsChanged = contextWrapper
-//					.pushSettingsOutdated();
-
 			androidId = util.getDeviceIdFromContext(contextWrapper.getContext());
 			
 			if (Util.stringIsNullOrEmpty(this.userId)) {
@@ -176,7 +225,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			sequence = new AtomicInteger(1);
 			touchEvents = new AtomicInteger(0);
 			allTouchEvents = new AtomicInteger(0);
-			// start the background UI service
 
 			// send appRunning or appPage
 			LargeGeneratedId lastSessionId = contextWrapper
@@ -213,12 +261,9 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			producer.start(this);
 			observer.setStateMachine(this);
 
-			//TODO: Refactor for push
-			
-//			if (enablePushNotifications && settingsChanged) {
-//				registerForPushNotifcations();
-//			} else {
-			//}
+			UserInfoEvent event = new UserInfoEvent(config, getSessionInfo(),
+					null, androidId);
+			eventQueue.enqueueEvent(event);
 			
 			cacheFile.setContext(contextWrapper.getContext());			
 		} catch (Exception ex) {
@@ -405,5 +450,26 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not preload placements");
 		}
+	}
+
+	@Override
+	public void onDeviceRegistered(String registrationId) {
+		try {
+			logger.log(LogLevel.DEBUG, "Received pushRegistrationId: %s", registrationId);
+			contextWrapper.setPushRegistrationId(registrationId);
+			notificationDelegate.onPushRegistrationSuccess(registrationId);
+			
+			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo(), registrationId, androidId);
+			eventQueue.enqueueEvent(userInfoEvent);
+			
+		} catch (UnsupportedEncodingException ex) {
+			logger.log(LogLevel.ERROR, ex, "Could not send pushRegistrationId to server %s", registrationId);
+		}
+	}
+
+	@Override
+	public void onDeviceRegistrationFailed(Exception exception) {
+		logger.log(LogLevel.WARNING, exception, "Failed to get a registration ID");
+		notificationDelegate.onPushRegistrationFailure(exception);
 	}
 }

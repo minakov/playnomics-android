@@ -26,6 +26,9 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.view.Window;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.playnomics.android.session.TouchEventHandler;
 import com.playnomics.android.session.WindowCallbackProxy;
 import com.playnomics.android.util.Logger.LogLevel;
@@ -95,6 +98,41 @@ public class Util implements IRandomGenerator {
 		return defaultLocale.getLanguage();
 	}
 
+	public boolean isGooglePlaySdkAvailable(){
+		try{
+			Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
+			return true;
+		} catch(ClassNotFoundException exception){
+			logger.log(LogLevel.WARNING, "Google Play Services are not available on this device.");
+		}
+		return false;
+	}
+	
+	public int getGooglePlayServiceStatus(Context context){
+		return GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+	}
+	
+	public boolean isGooglePlayAvailable(Activity context){
+		final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+		
+		boolean hasGooglePlaySdk = false;
+		try{
+			Class<?> googlePlayClass = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
+			hasGooglePlaySdk = true;
+		} catch(ClassNotFoundException exception){
+			logger.log(LogLevel.WARNING, "Google Play Services are not available on this device.");
+		}
+		
+		if(hasGooglePlaySdk){
+			
+		}
+		return false;
+	}
+	
+	public GoogleCloudMessaging getGCMFromContext(Context context){
+		return GoogleCloudMessaging.getInstance(context);
+	}
+	
 	public File getContextCacheFile(Context context, String fileName) {
 		return new File(context.getCacheDir(), fileName);
 	}
