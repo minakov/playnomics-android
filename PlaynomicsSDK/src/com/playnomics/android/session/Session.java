@@ -171,10 +171,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					    	if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
 					    		logger.log(LogLevel.WARNING, "Google Play Services are not up-to-date on this device.");
 					    		notificationDelegate.onPushRegistrationFailure(resultCode);
-					    		
-//					    		logger.log(LogLevel.WARNING, "Google Play Services are not up to date on this device.");
-//					        	GooglePlayServicesUtil.getErrorDialog(resultCode, context,
-//					            		PLAY_SERVICES_RESOLUTION_REQUEST).show();
 					        } else {
 					            logger.log(LogLevel.ERROR, "Google Play Services are not available on this device.");
 					            notificationDelegate.onPushRegistrationFailure();
@@ -190,13 +186,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			}
 		} catch(Exception ex){
 			logger.log(LogLevel.ERROR, ex, "Could not enable push notifications");
-		}
-	}
-	
-	public void start(ContextWrapper contextWrapper, Long applicationId, String userId, String pushSenderId) {
-		start(contextWrapper, applicationId, userId);
-		if(getSessionState() == SessionState.STARTED){
-			
 		}
 	}
 	
