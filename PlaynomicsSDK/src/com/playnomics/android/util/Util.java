@@ -112,23 +112,6 @@ public class Util implements IRandomGenerator {
 		return GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
 	}
 	
-	public boolean isGooglePlayAvailable(Activity context){
-		final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-		
-		boolean hasGooglePlaySdk = false;
-		try{
-			Class<?> googlePlayClass = Class.forName("com.google.android.gms.common.GooglePlayServicesUtil");
-			hasGooglePlaySdk = true;
-		} catch(ClassNotFoundException exception){
-			logger.log(LogLevel.WARNING, "Google Play Services are not available on this device.");
-		}
-		
-		if(hasGooglePlaySdk){
-			
-		}
-		return false;
-	}
-	
 	public GoogleCloudMessaging getGCMFromContext(Context context){
 		return GoogleCloudMessaging.getInstance(context);
 	}

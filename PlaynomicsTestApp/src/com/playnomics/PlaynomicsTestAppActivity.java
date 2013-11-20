@@ -133,7 +133,7 @@ public class PlaynomicsTestAppActivity
 		if (GooglePlayServicesUtil.isUserRecoverableError(errorCode)) {
             GooglePlayServicesUtil.getErrorDialog(errorCode, this,
                     PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            finish();
         }
-		
 	}
 }

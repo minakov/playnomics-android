@@ -189,7 +189,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				}
 			}
 		} catch(Exception ex){
-			
+			logger.log(LogLevel.ERROR, ex, "Could not enable push notifications");
 		}
 	}
 	

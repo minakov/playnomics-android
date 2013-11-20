@@ -17,7 +17,6 @@ public class GcmManager {
 	private Logger logger;
 	private Util util;
 	private ICloudMessagingHandler messagingHandler;
-	private String senderId;
 	
 	public static IGoogleCloudMessageConfig config;
 	
@@ -36,7 +35,7 @@ public class GcmManager {
 			public void run() {
 				try{
 					GoogleCloudMessaging gcm = util.getGCMFromContext(context);
-					String registrationId = gcm.register(senderId);
+					String registrationId = gcm.register(config.getSenderId());
 					messagingHandler.onDeviceRegistered(registrationId);
 				} catch(Exception ex){
 					messagingHandler.onDeviceRegistrationFailed(ex);
