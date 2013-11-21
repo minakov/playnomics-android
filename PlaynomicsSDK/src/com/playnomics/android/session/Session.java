@@ -158,10 +158,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			this.notificationDelegate = notificationDelegate;
 			
 			if(pushConfig instanceof IGoogleCloudMessageConfig){			
-				
 				IGoogleCloudMessageConfig gcmConfig = (IGoogleCloudMessageConfig) pushConfig;
 				if(util.isGooglePlaySdkAvailable()){
-					//Google Cloud Messaging 
+					//Google Cloud Messaging;
+					GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
+					
 					if(Util.stringIsNullOrEmpty(contextWrapper.getPushRegistrationId()) 
 							|| contextWrapper.pushSettingsOutdated()){
 						//settings are out-dated, so we need to get a new registration ID
@@ -178,7 +179,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					    	return;
 					    }
 						
-						GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
 						Runnable pushRegistrationTask = manager.createRegistrationTask(contextWrapper.getContext());
 						util.startTaskOnBackgroundThread(pushRegistrationTask);
 					}

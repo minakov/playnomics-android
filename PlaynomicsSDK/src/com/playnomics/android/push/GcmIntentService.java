@@ -1,7 +1,11 @@
 package com.playnomics.android.push;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
+import com.playnomics.android.util.Util;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -31,9 +35,22 @@ public class GcmIntentService extends IntentService {
         
         if (!extras.isEmpty()) {
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-            	String message = extras.getString("message");
-            	String title = extras.getString("title");
-            	sendNotification(message, title);
+            	String dataString = extras.getString("default");
+            	
+            	if(!Util.stringIsNullOrEmpty(dataString)){
+            		try {
+						JSONObject json = new JSONObject(dataString);
+						
+						String message = json.getString("message");
+	                	String title = json.getString("title");
+	                	
+	                	sendNotification(message, title);
+					} catch (JSONException e) {
+						
+					} catch (Exception ex){
+						
+					}
+            	}	
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
