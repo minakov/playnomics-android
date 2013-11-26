@@ -45,9 +45,7 @@ public class PlacementDataClient {
 				TreeMap<String, Object> queryParams = new TreeMap<String, Object>();
 				queryParams.put(config.getMessagingPlacementNameKey(),
 						placement.getPlacementName());
-				queryParams.put(config.getBreadcrumbIdKey(),
-						session.getBreadcrumbId());
-				queryParams.put(config.getMessagingAndroidIdKey(),
+				queryParams.put(config.getAndroidIdKey(),
 						session.getAndroidId());
 				queryParams.put(config.getMessagingLanguageKey(),
 						util.getDeviceLanguage());

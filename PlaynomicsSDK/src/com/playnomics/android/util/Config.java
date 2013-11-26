@@ -61,8 +61,8 @@ public class Config implements IConfig {
 		return bundle.getString("eventKeys.userIdKey");
 	}
 
-	public String getBreadcrumbIdKey() {
-		return bundle.getString("eventKeys.breadcrumbIdKey");
+	public String getAndroidIdKey() {
+		return bundle.getString("eventKeys.androidIdKey");
 	}
 
 	public String getEventTimeKey() {
@@ -131,10 +131,6 @@ public class Config implements IConfig {
 
 	public String getUserInfoInstallDateKey() {
 		return bundle.getString("eventKeys.userInfoInstallDateKey");
-	}
-
-	public String getUserInfoAndroidIdKey() {
-		return bundle.getString("eventKeys.userInfoAndroidIdKey");
 	}
 
 	public String getUserInfoPushTokenKey() {
@@ -236,10 +232,6 @@ public class Config implements IConfig {
 
 	public String getMessagingScreenHeightKey() {
 		return bundle.getString("messaging.screenHeightKey");
-	}
-	
-	public String getMessagingAndroidIdKey(){
-		return bundle.getString("messaging.androidIdKey");
 	}
 
 	public String getMessagingLanguageKey(){

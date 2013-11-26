@@ -162,7 +162,7 @@ public class SessionTest {
 		assertEquals("User ID is set", userId == null ? deviceId : userId,
 				session.getUserId());
 		assertEquals("Breadcrumb ID is set", deviceId,
-				session.getBreadcrumbId());
+				session.getAndroidId());
 		assertEquals("Session state is started",
 				SessionStateMachine.SessionState.STARTED,
 				session.getSessionState());
@@ -177,11 +177,8 @@ public class SessionTest {
 		EventTime startTime = ((AppStartEvent) event).getEventTime();
 		assertEquals("Session start time set", startTime,
 				session.getSessionStartTime());
-
-		Object nextEvent = eventQueue.queue.remove();
-		assertTrue("UserInfo queued", nextEvent instanceof UserInfoEvent);
-		// 2 events are queued
-		assertTrue("2 events are queued", eventQueue.isEmpty());
+		
+		assertTrue("1 event is queued", eventQueue.isEmpty());
 
 		// verify that contextWrapper is called
 		verify(contextWrapperMock).setLastSessionStartTime(startTime);
@@ -244,7 +241,7 @@ public class SessionTest {
 		assertEquals("Application ID is set", appId, session.getApplicationId());
 		assertEquals("User ID is set", userId, session.getUserId());
 		assertEquals("Breadcrumb ID is set", deviceId,
-				session.getBreadcrumbId());
+				session.getAndroidId());
 		assertEquals("Session state is started",
 				SessionStateMachine.SessionState.STARTED,
 				session.getSessionState());
@@ -269,13 +266,8 @@ public class SessionTest {
 			assertEquals("Instance ID is new", nextId, session.getInstanceId()
 					.getId());
 		}
-
-
-		Object nextEvent = eventQueue.queue.remove();
-		assertTrue("UserInfo queued", nextEvent instanceof UserInfoEvent);
-		// 2 events are queued
-
-		assertTrue("2 events are queued", eventQueue.isEmpty());
+		
+		assertTrue("1 event is queued", eventQueue.isEmpty());
 
 		verify(producerMock).start(session);
 		verify(observerMock).setStateMachine(session);

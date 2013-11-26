@@ -37,7 +37,7 @@ public class PlaynomicsEventTest {
 	protected GameSessionInfo getGameSessionInfo() {
 		Util util = new Util(logger);
 		LargeGeneratedId sessionId = new LargeGeneratedId(util);
-		return new GameSessionInfo(1L, "userId", "breadcrumId", sessionId);
+		return new GameSessionInfo(1L, "userId", "androidId", sessionId);
 	}
 
 	protected void testCommonEventParameters(IConfig config,
@@ -46,10 +46,10 @@ public class PlaynomicsEventTest {
 
 		assertEquals("Application ID is set", sessionInfo.getApplicationId(),
 				params.get("a"));
-		assertEquals("User ID is set", sessionInfo.getApplicationId(),
-				params.get("a"));
-		assertEquals("Breadcrumb ID is set", sessionInfo.getBreadcrumbId(),
-				params.get("b"));
+		assertEquals("User ID is set", sessionInfo.getUserId(),
+				params.get("u"));
+		assertEquals("Android ID is set", sessionInfo.getAndroidId(),
+				params.get("androidId"));
 		assertEquals("Session ID is set", sessionInfo.getSessionId(),
 				params.get(event.getSessionKey()));
 		assertEquals("Event time is set", event.getEventTime(), params.get("t"));

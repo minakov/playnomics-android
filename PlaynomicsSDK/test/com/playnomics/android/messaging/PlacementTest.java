@@ -109,7 +109,6 @@ public class PlacementTest {
 		MockitoAnnotations.initMocks(this);
 
 		when(sessionMock.getApplicationId()).thenReturn(1L);
-		when(sessionMock.getBreadcrumbId()).thenReturn("breadcrumb");
 		when(sessionMock.getAndroidId()).thenReturn("deviceId");
 		when(sessionMock.getUserId()).thenReturn("userId");
 

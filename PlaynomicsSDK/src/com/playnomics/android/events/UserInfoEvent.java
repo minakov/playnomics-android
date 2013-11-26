@@ -22,10 +22,9 @@ public class UserInfoEvent extends ExplicitEvent {
 	}
 
 	public UserInfoEvent(IConfig config, GameSessionInfo sessionInfo,
-			String pushRegistrationId, String androidId) {
+			String pushRegistrationId) {
 		super(config, sessionInfo);
 		appendParameter(config.getUserInfoPushTokenKey(), pushRegistrationId);
-		appendParameter(config.getUserInfoAndroidIdKey(), androidId);
 		appendParameter(config.getUserInfoTypeKey(), "update");
 	}
 

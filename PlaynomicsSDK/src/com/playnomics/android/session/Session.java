@@ -75,15 +75,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		return userId;
 	}
 	
-	public String getBreadcrumbId() {
+	public String getAndroidId() {
 		return androidId;
 	}
 
 	private String androidId;
-
-	public String getAndroidId() {
-		return androidId;
-	}
 
 	private LargeGeneratedId sessionId;
 
@@ -222,9 +218,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 //			if (enablePushNotifications && settingsChanged) {
 //				registerForPushNotifcations();
 //			} else {
-			UserInfoEvent event = new UserInfoEvent(config, getSessionInfo(),
-					null, util.getDeviceIdFromContext(contextWrapper.getContext()));
-			eventQueue.enqueueEvent(event);
 			//}
 			
 			cacheFile.setContext(contextWrapper.getContext());			

@@ -9,14 +9,14 @@ import com.playnomics.android.util.*;
 public class GameSessionInfo {
 	private Long applicationId;
 	private String userId;
-	private String breadcrumbId;
+	private String androidId;
 	private LargeGeneratedId sessionId;
 
 	public GameSessionInfo(Long applicationId, String userId,
-			String breadcrumbId, LargeGeneratedId sessionId) {
+			String androidId, LargeGeneratedId sessionId) {
 		this.applicationId = applicationId;
 		this.userId = userId;
-		this.breadcrumbId = breadcrumbId;
+		this.androidId = androidId;
 		this.sessionId = sessionId;
 	}
 
@@ -28,8 +28,8 @@ public class GameSessionInfo {
 		return userId;
 	}
 
-	public String getBreadcrumbId() {
-		return breadcrumbId;
+	public String getAndroidId() {
+		return androidId;
 	}
 
 	public LargeGeneratedId getSessionId() {

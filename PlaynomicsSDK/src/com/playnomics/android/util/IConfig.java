@@ -18,7 +18,7 @@ public interface IConfig {
 
 	public String getUserIdKey();
 
-	public String getBreadcrumbIdKey();
+	public String getAndroidIdKey();
 
 	public String getEventTimeKey();
 
@@ -53,8 +53,6 @@ public interface IConfig {
 	public String getUserInfoCampaignKey();
 
 	public String getUserInfoInstallDateKey();
-
-	public String getUserInfoAndroidIdKey();
 
 	public String getUserInfoPushTokenKey();
 
@@ -103,8 +101,6 @@ public interface IConfig {
 	public String getMessagingScreenWidthKey();
 
 	public String getMessagingScreenHeightKey();
-
-	public String getMessagingAndroidIdKey();
 	
 	public String getMessagingLanguageKey();
 	

@@ -19,8 +19,8 @@ public abstract class PlaynomicsEvent {
 		eventParameters.put(config.getApplicationIdKey(),
 				sessionInfo.getApplicationId());
 		eventParameters.put(config.getUserIdKey(), sessionInfo.getUserId());
-		eventParameters.put(config.getBreadcrumbIdKey(),
-				sessionInfo.getBreadcrumbId());
+		eventParameters.put(config.getAndroidIdKey(),
+				sessionInfo.getAndroidId());
 		eventParameters.put(getSessionKey(), sessionInfo.getSessionId());
 		eventParameters.put(config.getSdkVersionKey(), config.getSdkVersion());
 		eventParameters.put(config.getSdkNameKey(), config.getSdkName());
