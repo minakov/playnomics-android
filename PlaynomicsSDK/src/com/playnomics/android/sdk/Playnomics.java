@@ -72,9 +72,9 @@ public class Playnomics {
 		}
 	}
 	
+	@Deprecated
 	public static void setTestMode(boolean testMode){
-		Session session = getInstance();
-		session.setTestMode(testMode);
+		//test mode is now driven by the server
 	}
 	
 	public static void setLogLevel(LogLevel logLevel){

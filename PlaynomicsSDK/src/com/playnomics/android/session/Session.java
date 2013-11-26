@@ -131,10 +131,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		logger.setLogLevel(logLevel);
 	}
 	
-	public void setTestMode(boolean testMode){
-		config.setTestMode(testMode);
-	}
-	
 	public Session(IConfig config, Util util,
 			IHttpConnectionFactory connectionFactory, Logger logger,
 			IEventQueue eventQueue, IEventWorker eventWorker,

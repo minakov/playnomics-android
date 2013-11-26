@@ -19,28 +19,15 @@ public class Config implements IConfig {
 		return bundle.getString("sdk.name");
 	}
 
-	private String getTestEventsUrl() {
-		return bundle.getString("eventsUrl.test");
-	}
 
 	private String getProdEventsUrl() {
 		return bundle.getString("eventsUrl.prod");
-	}
-
-	private String getTestMessagingUrl() {
-		return bundle.getString("messagingUrl.test");
 	}
 
 	private String getProdMessagingUrl() {
 		return bundle.getString("messagingUrl.prod");
 	}
 	
-	private boolean testMode = false;
-
-	public void setTestMode(boolean value) {
-		testMode = value;
-	}
-
 	private String overrideEventsUrl;
 	public void setOverrideEventsUrl(String url) {
 		overrideEventsUrl = url;
@@ -49,9 +36,6 @@ public class Config implements IConfig {
 	public String getEventsUrl() {
 		if (!Util.stringIsNullOrEmpty(overrideEventsUrl)) {
 			return overrideEventsUrl;
-		}
-		if (testMode) {
-			return getTestEventsUrl();
 		}
 		return getProdEventsUrl();
 	}
@@ -65,9 +49,6 @@ public class Config implements IConfig {
 	public String getMessagingUrl() {
 		if (!Util.stringIsNullOrEmpty(overrideMessagingUrl)) {
 			return overrideMessagingUrl;
-		}
-		if (testMode) {
-			return getTestMessagingUrl();
 		}
 		return getProdMessagingUrl();
 	}

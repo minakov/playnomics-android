@@ -6,8 +6,6 @@ public interface IConfig {
 
 	public String getSdkName();
 
-	public void setTestMode(boolean testMode);
-
 	public void setOverrideEventsUrl(String eventsUrl);
 
 	public String getEventsUrl();
