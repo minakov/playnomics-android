@@ -42,6 +42,7 @@
                 <category android:name="com.playnomics" />
             </intent-filter>
         </receiver>
+        <!-- push background service -->
         <service android:name="com.playnomics.android.push.GcmIntentService" />
     </application>
 </manifest>

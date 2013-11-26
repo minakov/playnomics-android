@@ -4,8 +4,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.playnomics.android.util.IConfig;
-
 public class HeartBeatProducer implements IHeartBeatProducer {
 	private ScheduledThreadPoolExecutor hearbeatSchedule;
 	private long heartbeatIntervalSeconds;

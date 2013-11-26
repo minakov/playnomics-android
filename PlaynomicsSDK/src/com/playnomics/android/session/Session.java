@@ -461,4 +461,15 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		logger.log(LogLevel.WARNING, exception, "Failed to get a registration ID");
 		notificationDelegate.onPushRegistrationFailure(exception);
 	}
+	
+	@Override
+	public void onPushNotificationInteracted(String pushInteractedUrl){
+		StringBuilder builder = new StringBuilder(pushInteractedUrl);
+		builder.append(String.format("&a=%d", applicationId));
+		builder.append(String.format("&u=%s", userId));
+		builder.append(String.format("&b=%s", getBreadcrumbId()));
+		builder.append(String.format("&pt=%s", contextWrapper.getPushRegistrationId()));
+		
+		processUrlCallback(pushInteractedUrl);
+	}
 }

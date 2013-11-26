@@ -1,6 +1,5 @@
 package com.playnomics.android.client;
 
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.playnomics.android.events.PlaynomicsEvent;

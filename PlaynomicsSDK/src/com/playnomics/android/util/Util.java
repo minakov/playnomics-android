@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.view.Window;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.playnomics.android.session.TouchEventHandler;

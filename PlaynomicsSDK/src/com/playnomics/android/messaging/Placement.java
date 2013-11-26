@@ -1,15 +1,7 @@
 package com.playnomics.android.messaging;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
-
-import com.playnomics.android.messaging.Position.PositionType;
 import com.playnomics.android.messaging.Target.TargetType;
-import com.playnomics.android.messaging.ui.IPlayViewFactory;
 import com.playnomics.android.messaging.ui.PlayDialog;
 import com.playnomics.android.messaging.ui.PlayWebView;
 import com.playnomics.android.messaging.ui.RenderTaskFactory;

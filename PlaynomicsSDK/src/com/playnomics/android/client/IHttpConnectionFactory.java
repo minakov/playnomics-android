@@ -1,7 +1,6 @@
 package com.playnomics.android.client;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.TreeMap;
 

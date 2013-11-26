@@ -3,7 +3,6 @@ package com.playnomics.android.session;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.app.Activity;
-import android.view.Window;
 
 import com.playnomics.android.util.Util;
 

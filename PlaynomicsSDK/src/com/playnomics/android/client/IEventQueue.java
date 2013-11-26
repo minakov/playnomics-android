@@ -1,7 +1,6 @@
 package com.playnomics.android.client;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Set;
 
 import com.playnomics.android.events.PlaynomicsEvent;
 
