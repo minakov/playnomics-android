@@ -249,10 +249,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			eventWorker.start();
 			producer.start(this);
 			observer.setStateMachine(this);
-
-			UserInfoEvent event = new UserInfoEvent(config, getSessionInfo(),
-					null, androidId);
-			eventQueue.enqueueEvent(event);
 			
 			cacheFile.setContext(contextWrapper.getContext());			
 		} catch (Exception ex) {
@@ -448,7 +444,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			contextWrapper.setPushRegistrationId(registrationId);
 			notificationDelegate.onPushRegistrationSuccess(registrationId);
 			
-			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo(), registrationId, androidId);
+			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo(), registrationId);
 			eventQueue.enqueueEvent(userInfoEvent);
 			
 		} catch (UnsupportedEncodingException ex) {
@@ -467,7 +463,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		StringBuilder builder = new StringBuilder(pushInteractedUrl);
 		builder.append(String.format("&a=%d", applicationId));
 		builder.append(String.format("&u=%s", userId));
-		builder.append(String.format("&b=%s", getBreadcrumbId()));
+		builder.append(String.format("&androidId=%s", getAndroidId()));
 		builder.append(String.format("&pt=%s", contextWrapper.getPushRegistrationId()));
 		
 		processUrlCallback(pushInteractedUrl);

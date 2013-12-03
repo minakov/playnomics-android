@@ -41,6 +41,10 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.playnomics" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.playnomics.android.push.PUSH_OPENED" />
+                <category android:name="com.playnomics" />
+            </intent-filter>
         </receiver>
         <!-- push background service -->
         <service android:name="com.playnomics.android.push.GcmIntentService" />
