@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -131,9 +132,12 @@ public class PlaynomicsTestAppActivity
 		Log.e(this.getClass().getName(), "Failed to register device, GooglePlayServices is out of date");
 		
 		if (GooglePlayServicesUtil.isUserRecoverableError(errorCode)) {
-            GooglePlayServicesUtil.getErrorDialog(errorCode, this,
-                    PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            finish();
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode, this,
+                    PLAY_SERVICES_RESOLUTION_REQUEST);
+            
+            if(dialog != null){
+            	dialog.show();
+            }
         }
 	}
 }
