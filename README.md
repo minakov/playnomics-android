@@ -375,8 +375,8 @@ PlayRM Android currently only supports working with Google Cloud Messaging. You 
 
 At a high level, the Google Cloud Messaging architecture requires:
 
-* A [Google Cloud API Project](http://developer.android.com/google/gcm/gs.html) that you will create. This application will have a **Project ID** (the sender ID) and a `private API key`.
-    * In the Control Panel, you provide Playnomics with your `private API Key` so that we can send messages to your users.
+* A [Google Cloud API Project](http://developer.android.com/google/gcm/gs.html) that you create. This application will have a **Project ID** (the sender ID) and a `private API key`.
+    * In the Control Panel, you provide Playnomics with your `private API Key` authorizing us to send messages to your users
 * Your Android application needs [Google Play Services](http://developer.android.com/google/play-services/setup.html) setup.
     * Adding Google Play Services allows your application to communicate with the Google Cloud Messaging and other Google Services.
     * Using this service requires that the device has the most recent version of the Google Play Services apk installed to register and receive push notifications. Users typically have this updated automatically, but in the event that they don't, we provide some sample code for how to prompt the user to do so.
@@ -431,7 +431,7 @@ Add the following under the `application`:
 
 ## Register for Push Notifications
 
-To enable push notifcations with Google Play, you need to first implement two interfaces:
+To enable push notifcations with Google Play, you need to first implement two interfaces: `com.playnomics.android.sdk.IGoogleCloudMessageConfig` and `com.playnomics.android.sdk.IPushNotificationDelegate`.
 
 `com.playnomics.android.sdk.IGoogleCloudMessageConfig` gives the PlayRM SDK with your configuration settings for push notifications.
 
@@ -503,15 +503,17 @@ public interface IPushNotificationDelegate {
 }
 ```
 
-Finally, pass your implementations of these interfaces into:
+Then pass your implementations of these interfaces into:
 
 ```java
 static void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate);
 ```
 
-You should start this after the session.
+You should do this after the session has started.
 
 ## Sample Implementation
+
+Below is a sample implementation:
 
 ```java
 
