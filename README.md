@@ -45,9 +45,6 @@ class YourActivity extends Activity {
 
         //optionally set the log level for the SDK, default is ERROR
         Playnomics.setLogLevel(LogLevel.VERBOSE);
-        //Enable test mode to view your events in the Validator. Remove this line of code before releasing your application to the app store.
-        Playnomics.setTestMode(true);
-
         Playnomics.start(this, applicationId);
     }
 }
@@ -205,28 +202,13 @@ For each of these events, your delegate may also receive Rich Data that has been
 The actual contents of your JSON message can be delayed until the time of the messaging campaign configuration. However, the structure of your message needs to be decided before you can process it in your application. See [example use-cases for rich data](#example-use-cases-for-rich-data) below.
 
 ## Validate Integration
-After you've finished the installation, you should verify your that application is correctly integrated by checkout the integration verification section of your application page.
+After you've finished the installation, you should verify your that application is correctly integrated by adding test devices to your dashboard. Test devices are identified by the **Android ID** of your device.
 
-Simply visit the self-check page for your application: **`https://controlpanel.playnomics.com/applications/<APPID>`**
+Simply visit your application's setup page: **`https://controlpanel.playnomics.com/applications/<APPID>`**
 
-The page will update with events as they occur in real-time, with any errors flagged. Visit the  <a href="http://integration.playnomics.com/technical/#self-check">self-check validation guide</a> for more information.
+The page will update with events as they occur in real-time, with any errors flagged.
 
 We strongly recommend running the self-check validator before deploying your newly integrated application to production.
-
-## Switch SDK to Production Mode
-
-Once you have [validated](#validate-integration) your integration, switch the SDK from **test** to **production** mode by simply setting `setTestMode` field to `false` (or by removing/commenting out the call entirely) in the initialization block:
-
-```objectivec
-//...
-public void onCreate(){
-    Playnomics.setTestMode(false);
-    Playnomics.start(this, applicationId);
-}
-```
-If you ever wish to test or troubleshoot your integration later on, simply set `setTestMode` back to `true` and revisit the self-check validation tool for your application:
-
-**`https://controlpanel.playnomics.com/applications/<APPID>`**
 
 **Congratulations!** You've completed our basic integration. You will now be able to track engagement data through the PlayRM dashboard.
 
