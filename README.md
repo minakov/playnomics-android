@@ -388,7 +388,214 @@ Playnomics.customEvent(eventName);
 
 Push Notifications
 ==================
-Coming soon.
+
+PlayRM Android currently only supports working with Google Cloud Messaging. You should review **[Google's documentation](http://developer.android.com/google/gcm/index.html)** before starting this part of the integration.
+
+At a high level, the Google Cloud Messaging architecture requires:
+
+* A [Google Cloud API Project](http://developer.android.com/google/gcm/gs.html) that you will create. This application will have a **Project ID** (the sender ID) and a `private API key`.
+    * In the Control Panel, you provide Playnomics with your `private API Key` so that we can send messages to your users.
+* Your Android application needs [Google Play Services](http://developer.android.com/google/play-services/setup.html) setup.
+    * Adding Google Play Services allows your application to communicate with the Google Cloud Messaging and other Google Services.
+    * Using this service requires that the device has the most recent version of the Google Play Services apk installed to register and receive push notifications. Users typically have this updated automatically, but in the event that they don't, we provide some sample code for how to prompt the user to do so.
+* Your Android application also needs the `android-support-v4.jar` added to its build path.
+* Your Android application's manifest file needs to include receivers and services related to push notifications.
+
+## Edit Your Android Manifest File
+
+Add the following permissions your **AndroidManifest.xml** file:
+
+```xml
+<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+<permission android:name="com.example.gcm.permission.C2D_MESSAGE"
+    android:protectionLevel="signature" />
+<uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+```
+
+Add the following under the `application`:
+
+```xml
+<!-- google play services -->
+<meta-data android:name="com.google.android.gms.version"
+   android:value="@integer/google_play_services_version" />
+<!-- push receiver -->
+<receiver
+    android:name="com.playnomics.android.push.GcmBroadcastReceiver"
+    android:permission="com.google.android.c2dm.permission.SEND" >
+    <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <category android:name="YOUR_PACKAGE_NAME" />
+    </intent-filter>
+    <intent-filter>
+        <action android:name="com.playnomics.android.push.PUSH_OPENED" />
+        <category android:name="YOUR_PACKAGE_NAME" />
+    </intent-filter>
+</receiver>
+<!-- push background service -->
+<service android:name="com.playnomics.android.push.GcmIntentService" />
+```
+
+`YOUR_PACKAGE_NAME` is the package from the `manifest` node:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="YOUR_PACKAGE_NAME"
+    android:versionCode="1"
+    android:versionName="1.0" >
+```
+
+## Register for Push Notifications
+
+To enable push notifcations with Google Play, you need to first implement two interfaces:
+
+`com.playnomics.android.sdk.IGoogleCloudMessageConfig` gives the PlayRM SDK with your configuration settings for push notifications.
+
+```java
+public interface IGoogleCloudMessageConfig extends IPushConfig {
+    /*
+     * Provides the SDK with your Google API project's Project ID. This is ID is associated
+     * with the private key that your provide to Playnomics.
+     *
+     * @returns Your Google API Project's Project ID
+     */
+    public String getSenderId();
+}
+
+```
+
+```java
+public abstract interface IPushConfig {
+    /*
+     * Provides the SDK with a destination to send the user when they interact with
+     * your push notification. This activity's intent will be flagged as FLAG_ACTIVITY_NEW_TASK and
+     * FLAG_ACTIVITY_CLEAR_TOP, so that a new version of this activity will be launched.
+     *
+     * @result Returns an Class for a derivative of Activity.
+     */
+
+    public Class<?> getNotificationDestination();
+
+    /*
+     * Provides the SDK with the icon resource that should be shown adjacent to message in the Notification
+     * Manager. This can be the same as your application's icon resource.
+     */
+    public int getNotificationIcon();
+}
+```
+
+`com.playnomics.android.sdk.IPushNotificationDelegate` provides your application with important notifications about the registration process.
+
+```java
+public interface IPushNotificationDelegate {
+    /*
+     * Called when the user has been successfully registered for push notifications. 
+     *
+     * @param registrationId The SDK automatically tracks this ID. This is provided for your own logging and debugging.
+     */
+    public void onPushRegistrationSuccess(String registrationId);
+
+    /*
+     * Called when the SDK could not successfully register for push notifications. Google Play Services is not 
+     * installed on the device.
+     */
+    public void onPushRegistrationFailure();
+
+    /*
+     * Called when the SDK could not successfully register for push notifications. This maybe due to network 
+     * connectivity at the time we attempted to register this device.
+     *
+     * @param ex Root cause of registration failure.
+     */
+    public void onPushRegistrationFailure(Exception ex);
+
+    /*
+     * Called  when the SDK could not successfully register for push notifications. This likely due to the 
+     * user's device having an out-dated version of Google Play Services.
+     *
+     * @param Error code received when registering for push notifications.
+     */
+    public void onPushRegistrationFailure(int errorCode);
+}
+```
+
+Finally, pass your implementations of these interfaces into:
+
+```java
+static void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate);
+```
+
+You should start this after the session.
+
+## Sample Implementation
+
+```java
+
+public class YourActivity
+    extends Activity
+    implements IGoogleCloudMessageConfig, IPushNotificationDelegate {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        final long applicationId = <APPID>L;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        Playnomics.setLogLevel(LogLevel.VERBOSE);
+        Playnomics.start(this, applicationId);
+        //call this after start the session
+        Playnomics.enablePushNotifications(this, this);
+    }
+
+    @Override
+    public Class<?> getNotificationDestination() {
+        return PlaynomicsTestAppActivity.class;
+    }
+
+    @Override
+    public int getNotificationIcon() {
+        return R.drawable.ic_launcher;
+    }
+
+    @Override
+    public String getSenderId() {
+        return "463115531919";
+    }
+
+    @Override
+    public void onPushRegistrationSuccess(String registrationId) {
+        Log.d(this.getClass().getName(), String.format("Registered device %s", registrationId));
+    }
+
+    @Override
+    public void onPushRegistrationFailure() {
+        Log.e(this.getClass().getName(), "Failed to register device");
+    }
+
+    @Override
+    public void onPushRegistrationFailure(Exception ex) {
+        Log.e(this.getClass().getName(), "Failed to register device", ex);
+    }
+
+    @Override
+    public void onPushRegistrationFailure(int errorCode) {
+        final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+        Log.e(this.getClass().getName(), "Failed to register device, GooglePlayServices is out of date");
+
+        if (GooglePlayServicesUtil.isUserRecoverableError(errorCode)) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode, this,
+                    PLAY_SERVICES_RESOLUTION_REQUEST);
+            
+            if(dialog != null){
+                dialog.show();
+            }
+        }
+    }
+}
+
+```
 
 Example Use-Cases for Rich Data
 ===============================
