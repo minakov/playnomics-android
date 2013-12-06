@@ -863,6 +863,10 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 Change Log
 ==========
 
+#### Version 1.1.0
+* Support for Push Notifications for Google Cloud Messaging
+* `setTestMode` has been marked as deprecated. We now support test devices for validating and testing integrations.
+
 #### Version 1.0.0
 * Support for 3rd party html-based advertisements
 * Support for simplified, fullscreen placements and internal messaging creatives
