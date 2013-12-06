@@ -49,5 +49,19 @@
 			<version>1.5.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>google-play-services</groupId>
+		    <artifactId>com.google</artifactId>
+		    <version>13</version>
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/lib/google-play-services.jar</systemPath>
+		</dependency>
+		<dependency>
+		    <groupId>android-support-v4</groupId>
+		    <artifactId>android.support.v4</artifactId>
+		    <version>19</version>
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/lib/android-support-v4.jar</systemPath>
+		</dependency>
 	</dependencies>
 </project>
