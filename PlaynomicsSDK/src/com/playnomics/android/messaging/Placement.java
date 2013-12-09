@@ -1,16 +1,19 @@
 package com.playnomics.android.messaging;
 
 import android.app.Activity;
+
 import com.playnomics.android.messaging.Target.TargetType;
 import com.playnomics.android.messaging.ui.PlayDialog;
+import com.playnomics.android.messaging.ui.PlayViewFactory.IImageViewHandler;
 import com.playnomics.android.messaging.ui.PlayWebView;
 import com.playnomics.android.messaging.ui.RenderTaskFactory;
-import com.playnomics.android.messaging.ui.PlayViewFactory.IImageViewHandler;
+import com.playnomics.android.sdk.IPlacementDelegate;
 import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
+import com.playnomics.android.sdk.IPlaynomicsPlacementRawDelegate;
 import com.playnomics.android.session.ICallbackProcessor;
 import com.playnomics.android.util.Logger;
-import com.playnomics.android.util.Util;
 import com.playnomics.android.util.Logger.LogLevel;
+import com.playnomics.android.util.Util;
 
 public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHandler {
 
@@ -30,7 +33,7 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 	private boolean impressionLogged;
 
 	private Util util;
-	private IPlaynomicsPlacementDelegate delegate;
+	private IPlacementDelegate delegate;
 	private Activity activity;
 	private ICallbackProcessor callbackProcessor;
 	private Logger logger;
@@ -95,7 +98,7 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 	}
 
 	public void show(final Activity activity,
-			IPlaynomicsPlacementDelegate delegate) {
+			IPlacementDelegate delegate) {
 		
 		logger.log(LogLevel.DEBUG, "Showing on THREAD %d", Thread.currentThread().getId());
 		this.delegate = delegate;
@@ -161,7 +164,11 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 			callbackProcessor.processUrlCallback(htmlAd.getImpressionUrl());
 		
 			if (delegate != null) {
-				delegate.onShow(htmlAd.getTarget().getTargetData());
+				if(delegate instanceof IPlaynomicsPlacementDelegate){
+					((IPlaynomicsPlacementDelegate) delegate).onShow(htmlAd.getTarget().getTargetData());
+				} else if(delegate instanceof IPlaynomicsPlacementRawDelegate){
+					((IPlaynomicsPlacementRawDelegate) delegate).onShow(htmlAd.getTarget().getTargetDataJson());
+				}
 			}
 		}
 	}
@@ -195,7 +202,11 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 		}
 
 		if (delegate != null) {
-			delegate.onTouch(htmlAd.getTarget().getTargetData());
+			if(delegate instanceof IPlaynomicsPlacementDelegate){
+				((IPlaynomicsPlacementDelegate) delegate).onTouch(htmlAd.getTarget().getTargetData());
+			} else if(delegate instanceof IPlaynomicsPlacementRawDelegate){
+				((IPlaynomicsPlacementRawDelegate) delegate).onTouch(htmlAd.getTarget().getTargetDataJson());
+			}
 		}
 	}
 
@@ -204,7 +215,11 @@ public class Placement implements PlayWebView.IPlayWebViewHandler, IImageViewHan
 			callbackProcessor.processUrlCallback(htmlAd.getCloseUrl());
 		}
 		if (delegate != null) {
-			delegate.onClose(htmlAd.getTarget().getTargetData());
+			if(delegate instanceof IPlaynomicsPlacementDelegate){
+				((IPlaynomicsPlacementDelegate) delegate).onClose(htmlAd.getTarget().getTargetData());
+			} else if(delegate instanceof IPlaynomicsPlacementRawDelegate){
+				((IPlaynomicsPlacementRawDelegate) delegate).onClose(htmlAd.getTarget().getTargetDataJson());
+			}
 		}
 	}
 

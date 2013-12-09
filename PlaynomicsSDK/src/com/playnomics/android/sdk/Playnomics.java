@@ -154,6 +154,12 @@ public class Playnomics {
 		session.showPlacement(placementName, activity, delegate);
 	}
 	
+	public static void showPlacement(String placementName, Activity activity,
+			IPlaynomicsPlacementRawDelegate rawDelegate) {
+		Session session = getInstance();
+		session.showPlacement(placementName, activity, rawDelegate);
+	}
+	
 	public static void showPlacement(String placementName, Activity activity) {
 		Session session = getInstance();
 		session.showPlacement(placementName, activity, null);

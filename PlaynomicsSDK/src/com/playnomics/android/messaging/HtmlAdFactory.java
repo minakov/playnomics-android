@@ -86,7 +86,7 @@ public class HtmlAdFactory {
 				JSONObject targetDataJson = new JSONObject(targetDataJSON);
 				targetData = Util.toMap(targetDataJson);
 			}
-			return new Target(TargetType.DATA, targetData);
+			return new Target(TargetType.DATA, targetData, targetDataJSON);
 		}
 
 		if (targetType == TargetType.EXTERNAL) {

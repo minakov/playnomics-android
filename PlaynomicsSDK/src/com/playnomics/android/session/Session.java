@@ -27,7 +27,9 @@ import com.playnomics.android.messaging.MessagingManager;
 import com.playnomics.android.push.GcmManager;
 import com.playnomics.android.push.GcmManager.ICloudMessagingHandler;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
+import com.playnomics.android.sdk.IPlacementDelegate;
 import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
+import com.playnomics.android.sdk.IPlaynomicsPlacementRawDelegate;
 import com.playnomics.android.sdk.IPushConfig;
 import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.util.CacheFile;
@@ -435,7 +437,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		}
 	}
 	
-	public void showPlacement(String placementName, Activity activity, IPlaynomicsPlacementDelegate delegate){
+	public void showPlacement(String placementName, Activity activity, IPlacementDelegate delegate){
 		try{
 			assertSessionStarted();
 			messagingManager.showPlacement(placementName, activity, delegate);

@@ -9,7 +9,9 @@ import com.playnomics.android.messaging.Placement.IPlacementStateObserver;
 import com.playnomics.android.messaging.Placement.PlacementState;
 import com.playnomics.android.messaging.ui.IPlayViewFactory;
 import com.playnomics.android.messaging.ui.RenderTaskFactory;
+import com.playnomics.android.sdk.IPlacementDelegate;
 import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
+import com.playnomics.android.sdk.IPlaynomicsPlacementRawDelegate;
 import com.playnomics.android.session.ICallbackProcessor;
 import com.playnomics.android.session.Session;
 import com.playnomics.android.util.IConfig;
@@ -50,11 +52,10 @@ public class MessagingManager implements IPlacementStateObserver {
 	}
 
 	public void showPlacement(String placementName, Activity activity,
-			IPlaynomicsPlacementDelegate delegate) {
+			IPlacementDelegate delegate) {
 		if(placementName == null){
 			return;
 		}
-		
 		Placement placement = getOrAddPlacement(placementName);
 	
 		if(placement.getState() == PlacementState.NOT_LOADED || placement.getState() == PlacementState.LOAD_FAILED){
@@ -64,7 +65,7 @@ public class MessagingManager implements IPlacementStateObserver {
 		
 		placement.show(activity, delegate);
 	}
-
+	
 	private Placement getOrAddPlacement(String placementName) {
 		Placement placement;
 		if (!placementsByName.containsKey(placementName)) {
