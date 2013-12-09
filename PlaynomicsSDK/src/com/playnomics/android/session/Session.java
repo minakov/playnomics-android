@@ -364,11 +364,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		}
 	}
 
-	//TODO: bring back for push
-//	void registerForPushNotifcations() {
-//		
-//	}
-
 	// explicit events
 	public void transactionInUSD(float priceInUSD, int quantity) {
 		try {
