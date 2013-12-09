@@ -36,7 +36,9 @@ import com.playnomics.android.events.CustomEvent;
 import com.playnomics.android.events.TransactionEvent;
 import com.playnomics.android.events.UserInfoEvent;
 import com.playnomics.android.messaging.MessagingManager;
+import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
 import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
+import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.session.IActivityObserver;
 import com.playnomics.android.session.IHeartBeatProducer;
 import com.playnomics.android.session.Session;
@@ -83,6 +85,11 @@ public class SessionTest {
 	private Runnable readTaskMock;
 	@Mock
 	private Runnable writeTaskMock;
+	@Mock
+	private IGoogleCloudMessageConfig pushConfig;
+	@Mock
+	private IPushNotificationDelegate pushDelegate;
+	
 	
 	private Session session;
 	private StubEventQueue eventQueue;
@@ -129,15 +136,25 @@ public class SessionTest {
 
 	@Test
 	public void testStartNoUserId() {
-		testNewDevice(null);
+		testNewDevice(null, false);
 	}
 
 	@Test
 	public void testStartNewDevice() {
-		testNewDevice(userId);
+		testNewDevice(userId, false);
+	}
+	
+	@Test
+	public void testStartNewDeviceWithPushRegistration(){
+		session.enablePushNotifications(pushConfig, pushDelegate);
+		String registrationId = "registrationId";
+		session.onDeviceRegistered(registrationId);
+		testNewDevice(userId, true);
+		
+		verify(pushDelegate).onPushRegistrationSuccess(registrationId);
 	}
 
-	public void testNewDevice(String userId) {
+	public void testNewDevice(String userId, boolean pushRegistrationOccurred) {
 		long newSessionId = 1;
 
 		when(utilMock.generatePositiveRandomLong()).thenReturn(newSessionId);
@@ -169,7 +186,13 @@ public class SessionTest {
 		assertEquals("Session start time set", startTime,
 				session.getSessionStartTime());
 		
-		assertTrue("1 event is queued", eventQueue.isEmpty());
+		if(!pushRegistrationOccurred){
+			assertTrue("1 event is queued", eventQueue.isEmpty());
+		} else {
+			Object userInfoEvent = eventQueue.queue.remove();
+			assertTrue("UserInfo queued", userInfoEvent instanceof UserInfoEvent);
+			assertTrue("2 events are queued", eventQueue.isEmpty());
+		}
 
 		// verify that contextWrapper is called
 		verify(contextWrapperMock).setLastSessionStartTime(startTime);
@@ -182,25 +205,25 @@ public class SessionTest {
 
 	@Test
 	public void testStartNoLapseOldDeviceData() {
-		testOldDevice(false, false);
+		testOldDevice(false, false, false);
 	}
 
 	@Test
 	public void testStartNoLapseNewDeviceData() {
-		testOldDevice(false, true);
+		testOldDevice(false, true, false);
 	}
 
 	@Test
 	public void testLapseOldDeviceData() {
-		testOldDevice(true, false);
+		testOldDevice(true, false, false);
 	}
 
 	@Test
 	public void testLapseNewDeviceData() {
-		testOldDevice(true, false);
+		testOldDevice(true, false, false);
 	}
 
-	private void testOldDevice(boolean lapsed, boolean deviceDataChanged) {
+	private void testOldDevice(boolean lapsed, boolean deviceDataChanged, boolean pushRegistrationOccurred) {
 		long nextId = 2;
 		when(utilMock.generatePositiveRandomLong()).thenReturn(nextId);
 
@@ -258,7 +281,14 @@ public class SessionTest {
 					.getId());
 		}
 		
-		assertTrue("1 event is queued", eventQueue.isEmpty());
+		if(!pushRegistrationOccurred){
+			assertTrue("1 event is queued", eventQueue.isEmpty());
+		} else {
+			Object userInfoEvent = eventQueue.queue.remove();
+			assertTrue("UserInfo queued", userInfoEvent instanceof UserInfoEvent);
+			assertTrue("2 events are queued", eventQueue.isEmpty());
+		}
+
 
 		verify(producerMock).start(session);
 		verify(observerMock).setStateMachine(session);
@@ -453,4 +483,23 @@ public class SessionTest {
 		session.hidePlacement(placementName);
 		verify(messagingManagerMock, Mockito.never()).hidePlacement(placementName);
 	}
+	
+	@Test
+	public void testOnDeviceRegisteredNoStart(){
+		String registrationId = "registrationId";
+		session.onDeviceRegistered(registrationId);
+		assertTrue("No registration event queued", eventQueue.isEmpty());
+	}
+	
+	@Test
+	public void testOnDeviceRegisteredAfterStart(){
+		testNewDevice(userId, false);
+		session.enablePushNotifications(pushConfig, pushDelegate);
+		String registrationId = "registrationId";
+		session.onDeviceRegistered(registrationId);
+		Object userInfoEvent = eventQueue.queue.remove();
+		assertTrue("User Info Event queued", userInfoEvent instanceof UserInfoEvent);
+		verify(pushDelegate).onPushRegistrationSuccess(registrationId);
+	}
 }
+
