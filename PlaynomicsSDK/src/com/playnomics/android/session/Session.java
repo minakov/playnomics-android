@@ -70,6 +70,8 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	private CacheFile cacheFile;
 	//push notifications
 	
+	private String unprocessedRegistrationId;
+	
 	private IPushNotificationDelegate notificationDelegate;
 	
 	//session data
@@ -152,9 +154,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	}
 	
 	public void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate){
-		try{
-			assertSessionStarted();
-		
+		try{		
 			this.notificationDelegate = notificationDelegate;
 			
 			if(pushConfig instanceof IGoogleCloudMessageConfig){			
@@ -246,6 +246,15 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			}
 			
 			eventQueue.enqueueEvent(implicitEvent);
+			
+			if(unprocessedRegistrationId != null){
+				//if we received a push registration ID 
+				//before we could start the session, send this registration ID
+				//to the API
+				onDeviceRegistered(unprocessedRegistrationId);
+				unprocessedRegistrationId = null;
+			}
+			
 			eventWorker.start();
 			producer.start(this);
 			observer.setStateMachine(this);
@@ -452,6 +461,14 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	@Override
 	public void onDeviceRegistered(String registrationId) {
 		try {
+			
+			if(sessionState == SessionState.NOT_STARTED){
+				//if the session has not started, then just save the registration ID for later
+				//we can't register yet, because the userId and applicationId are null
+				unprocessedRegistrationId = registrationId;
+				return;
+			}
+			
 			logger.log(LogLevel.DEBUG, "Received pushRegistrationId: %s", registrationId);
 			contextWrapper.setPushRegistrationId(registrationId);
 			notificationDelegate.onPushRegistrationSuccess(registrationId);
