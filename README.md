@@ -202,15 +202,15 @@ For each of these events, your delegate may also receive Rich Data that has been
 The actual contents of your JSON message can be delayed until the time of the messaging campaign configuration. However, the structure of your message needs to be decided before you can process it in your application. See [example use-cases for rich data](#example-use-cases-for-rich-data) below.
 
 ## Validate Integration
-After you've finished the installation, you should verify your that application is correctly integrated by adding test devices to your dashboard. Test devices are identified by the **Android ID** of your device.
+After you've finished the installation, you should verify that your application is correctly integrated by checkout the integration verification section of your application page.
 
-Simply visit your application's setup page: **`https://controlpanel.playnomics.com/applications/<APPID>`**
+Using Android SDK v1.1.0+ you can register your device as a Test Device and validate your events on the self-check page for your application: **`https://controlpanel.playnomics.com/applications/<APPID>`**
 
-The page will update with events as they occur in real-time, with any errors flagged.
+To test your in-app campaigns, you can enter your device's Android ID and select which segments to fall into.  Optionally, you can opt to not select any segments to simply see your device's data flowing through the validator.
+
+This page will update with events as they occur in real-time, with any errors flagged. 
 
 We strongly recommend running the self-check validator before deploying your newly integrated application to production.
-
-**Congratulations!** You've completed our basic integration. You will now be able to track engagement data through the PlayRM dashboard.
 
 Full Integration
 =================
