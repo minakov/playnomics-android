@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -57,46 +59,35 @@ public class SessionTest {
 
 	@Mock
 	private HttpConnectionFactory factoryMock;
-
 	@Mock
 	private Context contextMock;
-
 	@Mock
 	private Util utilMock;
 	@Mock
 	private ContextWrapper contextWrapperMock;
-
 	@Mock
 	private IHeartBeatProducer producerMock;
-
 	@Mock
 	private IActivityObserver observerMock;
-
 	@Mock
 	private IEventWorker eventWorker;
-
 	@Mock
 	private Activity activityMock;
-
 	@Mock
 	private MessagingManager messagingManagerMock;
-	
 	@Mock
 	private IPlaynomicsPlacementDelegate delegateMock;
-	
 	@Mock
 	private CacheFile cacheFileMock;
-	
 	@Mock
 	private Runnable readTaskMock;
-	
 	@Mock
 	private Runnable writeTaskMock;
 	
-	
 	private Session session;
 	private StubEventQueue eventQueue;
-
+	private Config config;
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -116,7 +107,7 @@ public class SessionTest {
 
 		eventQueue = new StubEventQueue();
 
-		Config config = new Config();
+		config = spy(new Config());
 		Logger logger = new Logger(new UnitTestLogWriter());
 		session = new Session(config, utilMock, factoryMock, logger,
 				eventQueue, eventWorker, observerMock, producerMock,
@@ -386,6 +377,20 @@ public class SessionTest {
 		assertTrue("Pause event queued", pauseEvent instanceof AppPauseEvent);
 		Object resumeEvent = eventQueue.queue.remove();
 		assertTrue("Resume event queued", resumeEvent instanceof AppResumeEvent);
+	}
+
+	@Test
+	public void testResumeAppStart() {
+		when(config.getAppPauseTimeoutMinutes()).thenReturn(0);
+		
+		testStartNewDevice();
+		session.pause();
+		session.resume();
+		
+		Object pauseEvent = eventQueue.queue.remove();
+		assertTrue("Pause event queued", pauseEvent instanceof AppPauseEvent);
+		Object startEvent = eventQueue.queue.remove();
+		assertTrue("Start event queued", startEvent instanceof AppStartEvent);
 	}
 
 	@Test

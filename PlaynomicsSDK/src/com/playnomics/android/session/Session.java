@@ -287,6 +287,18 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				return;
 			}
 
+			GregorianCalendar thirtyMinutesAgo = new GregorianCalendar(
+					Util.TIME_ZONE_GMT);
+			thirtyMinutesAgo.add(Calendar.MINUTE, -config.getAppPauseTimeoutMinutes());
+			
+			if(sessionPauseTime.compareTo(thirtyMinutesAgo) < 0){
+				//the session has been paused for longer than 30 minutes
+				//we should treat this as a completely new session
+				setSessionState(SessionState.NOT_STARTED);
+				start(contextWrapper, applicationId, userId);
+				return;
+			}
+			
 			AppResumeEvent event = new AppResumeEvent(config, getSessionInfo(),
 					instanceId, sessionStartTime, sessionPauseTime,
 					sequence.get());

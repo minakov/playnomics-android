@@ -75,6 +75,8 @@ public interface IConfig {
 	public int getAppRunningIntervalSeconds();
 
 	public int getAppRunningIntervalMilliseconds();
+	
+	public int getAppPauseTimeoutMinutes();
 
 	public int getCollectionMode();
 

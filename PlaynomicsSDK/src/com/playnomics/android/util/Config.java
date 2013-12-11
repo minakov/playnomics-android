@@ -181,6 +181,10 @@ public class Config implements IConfig {
 	public int getAppRunningIntervalMilliseconds() {
 		return getAppRunningIntervalSeconds() * 1000;
 	}
+	
+	public int getAppPauseTimeoutMinutes(){
+		return Integer.parseInt(bundle.getString("appPauseTimeoutMinutes"));
+	}
 
 	public int getCollectionMode() {
 		return Integer.parseInt(bundle.getString("collectionMode"));
