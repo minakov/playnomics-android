@@ -43,12 +43,18 @@ public class MessagingManager implements IPlacementStateObserver {
 
 	public void preloadPlacements(String[] placementNames) {
 		for (String placementName : placementNames) {
-			getOrAddPlacement(placementName);
+			if(placementName != null){
+				getOrAddPlacement(placementName);
+			}
 		}
 	}
 
 	public void showPlacement(String placementName, Activity activity,
 			IPlaynomicsPlacementDelegate delegate) {
+		if(placementName == null){
+			return;
+		}
+		
 		Placement placement = getOrAddPlacement(placementName);
 	
 		if(placement.getState() == PlacementState.NOT_LOADED || placement.getState() == PlacementState.LOAD_FAILED){
