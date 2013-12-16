@@ -10,8 +10,6 @@ import com.playnomics.android.messaging.Placement.PlacementState;
 import com.playnomics.android.messaging.ui.IPlayViewFactory;
 import com.playnomics.android.messaging.ui.RenderTaskFactory;
 import com.playnomics.android.sdk.IPlacementDelegate;
-import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
-import com.playnomics.android.sdk.IPlaynomicsPlacementRawDelegate;
 import com.playnomics.android.session.ICallbackProcessor;
 import com.playnomics.android.session.Session;
 import com.playnomics.android.util.IConfig;
