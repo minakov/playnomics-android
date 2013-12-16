@@ -3,7 +3,7 @@ package com.playnomics.android.util;
 public class Config implements IConfig {
 
 	public String getSdkVersion() {
-		return "1.2.0";
+		return "${project.version}";
 	}
 
 	public String getSdkName() {

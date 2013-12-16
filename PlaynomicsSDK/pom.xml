@@ -5,13 +5,15 @@
 	<artifactId>playnomics-android-sdk</artifactId>
 	<version>1.2.0</version>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
+		<sourceDirectory>target/filtered-sources</sourceDirectory>
+		 <!-- Configure the source files as resources to be filtered into a custom target directory -->
+	    <resources>
+	      <resource>
+	        <directory>src</directory>
+	        <filtering>true</filtering>
+	        <targetPath>../filtered-sources</targetPath>
+	      </resource>
+	    </resources>
 		<testSourceDirectory>test</testSourceDirectory>
 		<testResources>
 		    <testResource>
