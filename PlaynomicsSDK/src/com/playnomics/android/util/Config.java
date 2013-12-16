@@ -1,31 +1,22 @@
 package com.playnomics.android.util;
 
-import java.util.ResourceBundle;
-
 public class Config implements IConfig {
-	private final String CONFIG_FILE = "PlaynomicsSDKConfig";
-
-	private ResourceBundle bundle;
-
-	public Config() {
-		bundle = ResourceBundle.getBundle(CONFIG_FILE);
-	}
 
 	public String getSdkVersion() {
-		return bundle.getString("sdk.version");
+		return "1.2.0";
 	}
 
 	public String getSdkName() {
-		return bundle.getString("sdk.name");
+		return "aj";
 	}
 
 
 	private String getProdEventsUrl() {
-		return bundle.getString("eventsUrl.prod");
+		return "https://e.a.playnomics.net/v1/";
 	}
 
 	private String getProdMessagingUrl() {
-		return bundle.getString("messagingUrl.prod");
+		return "https://ads.a.playnomics.net/v3/";
 	}
 	
 	private String overrideEventsUrl;
@@ -54,128 +45,123 @@ public class Config implements IConfig {
 	}
 
 	public String getApplicationIdKey() {
-		return bundle.getString("eventKeys.applicationIdKey");
+		return "a";
 	}
 
 	public String getUserIdKey() {
-		return bundle.getString("eventKeys.userIdKey");
+		return "u";
 	}
 
 	public String getAndroidIdKey() {
-		return bundle.getString("eventKeys.androidIdKey");
+		return "androidId";
 	}
 
 	public String getEventTimeKey() {
-		return bundle.getString("eventKeys.eventTimeKey");
+		return "t";
 	}
 
 	public String getSdkVersionKey() {
-		return bundle.getString("eventKeys.sdkVersionKey");
+		return "ever";
 	}
 
 	public String getSdkNameKey() {
-		return bundle.getString("eventKeys.sdkNameKey");
+		return "esrc";
 	}
 	
 	public String getTimeZoneOffsetKey() {
-		return bundle.getString("eventKeys.timeZoneOffsetKey");
+		return "z";
 	}
 
 	public String getSequenceKey() {
-		return bundle.getString("eventKeys.sequenceKey");
+		return "q";
 	}
 
 	public String getTouchesKey() {
-		return bundle.getString("eventKeys.touchesKey");
+		return "c";
 	}
 
 	public String getTotalTouchesKey() {
-		return bundle.getString("eventKeys.totalTouchesKey");
+		return "e";
 	}
 
 	public String getKeysPressedKey() {
-		return bundle.getString("eventKeys.keysPressedKey");
+		return "k";
 	}
 
 	public String getTotalKeysPressedKey() {
-		return bundle.getString("eventKeys.totalKeysPressedKey");
+		return "l";
 	}
 
 	public String getSessionStartTimeKey() {
-		return bundle.getString("eventKeys.sessionStartTimeKey");
+		return "r";
 	}
 
 	public String getIntervalMillisecondsKey() {
-		return bundle.getString("eventKeys.intervalMillisecondsKey");
+		return "d";
 	}
 
 	public String getCollectionModeKey() {
-		return bundle.getString("eventKeys.collectionModeKey");
+		return "m";
 	}
 
 	public String getSessionPauseTimeKey() {
-		return bundle.getString("eventKeys.sessionPauseTimeKey");
+		return "p";
 	}
 
 	public String getUserInfoTypeKey() {
-		return bundle.getString("eventKeys.userInfoTypeKey");
+		return "pt";
 	}
 
 	public String getUserInfoSourceKey() {
-		return bundle.getString("eventKeys.userInfoSourceKey");
+		return "po";
 	}
 
 	public String getUserInfoCampaignKey() {
-		return bundle.getString("eventKeys.userInfoCampaignKey");
+		return "pm";
 	}
 
 	public String getUserInfoInstallDateKey() {
-		return bundle.getString("eventKeys.userInfoInstallDateKey");
+		return "pi";
 	}
 
 	public String getUserInfoPushTokenKey() {
-		return bundle.getString("eventKeys.userInfoPushTokenKey");
+		return "pushTok";
 	}
 
 	public String getTransactionIdKey() {
-		return bundle.getString("eventKeys.transactionIdKey");
+		return "r";
 	}
 
 	public String getTransactionTypeKey() {
-		return bundle.getString("eventKeys.transactionTypeKey");
+		return "tt";
 	}
 
 	public String getTransactionItemIdKey() {
-		return bundle.getString("eventKeys.transactionItemIdKey");
+		return "i";
 	}
 
 	public String getTransactionQuantityKey() {
-		return bundle.getString("eventKeys.transactionQuantityKey");
+		return "tq";
 	}
 
 	public String getTransactionCurrencyTypeFormatKey() {
-		return bundle.getString("eventKeys.transactionCurrencyTypeFormatKey");
+		return "tc%d";
 	}
 
 	public String getTransactionCurrencyValueFormatKey() {
-		return bundle.getString("eventKeys.transactionCurrencyValueFormatKey");
+		return "tv%d";
 	}
 
 	public String getTransactionCurrencyCategoryFormatKey() {
-		return bundle
-				.getString("eventKeys.transactionCurrencyCategoryFormatKey");
-	}
-
-	public String getMilestoneIdKey() {
-		return bundle.getString("eventKeys.milestoneIdKey");
+		return "ta%d";
 	}
 
 	public String getMilestoneNameKey() {
-		return bundle.getString("eventKeys.milestoneNameKey");
+		return "mn";
 	}
 
 	public int getAppRunningIntervalSeconds() {
-		return Integer.parseInt(bundle.getString("appRunningIntervalSeconds"));
+		return 60;
 	}
 
 	public int getAppRunningIntervalMilliseconds() {
@@ -183,67 +169,67 @@ public class Config implements IConfig {
 	}
 	
 	public int getAppPauseTimeoutMinutes(){
-		return Integer.parseInt(bundle.getString("appPauseTimeoutMinutes"));
+		return 30;
 	}
 
 	public int getCollectionMode() {
-		return Integer.parseInt(bundle.getString("collectionMode"));
+		return 7;
 	}
 
 	public String getEventPathUserInfo() {
-		return bundle.getString("eventNames.userInfo");
+		return "userInfo";
 	}
 
 	public String getEventPathMilestone() {
-		return bundle.getString("eventNames.milestone");
+		return "milestone";
 	}
 
 	public String getEventPathTransaction() {
-		return bundle.getString("eventNames.transaction");
+		return "transaction";
 	}
 
 	public String getEventPathAppRunning() {
-		return bundle.getString("eventNames.appRunning");
+		return "appRunning";
 	}
 
 	public String getEventPathAppPage() {
-		return bundle.getString("eventNames.appPage");
+		return "appPage";
 	}
 
 	public String getEventPathAppResume() {
-		return bundle.getString("eventNames.appResume");
+		return "appResume";
 	}
 
 	public String getEventPathAppStart() {
-		return bundle.getString("eventNames.appStart");
+		return "appStart";
 	}
 
 	public String getEventPathAppPause() {
-		return bundle.getString("eventNames.appPause");
+		return "appPause";
 	}
 
 	public String getMessagingPathAds() {
-		return bundle.getString("messaging.adsPath");
+		return "ads";
 	}
 
 	public String getMessagingPlacementNameKey() {
-		return bundle.getString("messaging.placementNameKey");
+		return "f";
 	}
 
 	public String getMessagingScreenWidthKey() {
-		return bundle.getString("messaging.screenWidthKey");
+		return "d";
 	}
 
 	public String getMessagingScreenHeightKey() {
-		return bundle.getString("messaging.screenHeightKey");
+		return "c";
 	}
 
 	public String getMessagingLanguageKey(){
-		return bundle.getString("messaging.languageKey");
+		return"lang";
 	}
 
 	public String getCacheFileName() {
-		return bundle.getString("cacheFileName");
+		return "playnomicsEventList";
 	}
 }
 
