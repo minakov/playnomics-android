@@ -3,6 +3,9 @@ package com.playnomics.android.session;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import com.playnomics.android.util.Logger;
+import com.playnomics.android.util.Logger.LogLevel;
+
 import android.view.MotionEvent;
 import android.view.Window;
 
@@ -12,6 +15,7 @@ import android.view.Window;
  */
 public class WindowCallbackProxy implements InvocationHandler {
 
+	private Logger logger;
 	private Window.Callback callback;
 	private TouchEventHandler eventHandler;
 
@@ -20,19 +24,20 @@ public class WindowCallbackProxy implements InvocationHandler {
 	}
 
 	public static Window.Callback newCallbackProxyForActivity(
-			Window.Callback callback, TouchEventHandler eventHandler) {
+			Window.Callback callback, TouchEventHandler eventHandler, Logger logger) {
 		Object proxy = java.lang.reflect.Proxy.newProxyInstance(
 				callback.getClass().getClassLoader(), 
 				new Class[]{ Window.Callback.class}, 
-				new WindowCallbackProxy(callback, eventHandler));
+				new WindowCallbackProxy(callback, eventHandler, logger));
 		
 		return (Window.Callback) proxy;
 	}
 
 	private WindowCallbackProxy(Window.Callback callback,
-			TouchEventHandler eventHandler) {
+			TouchEventHandler eventHandler, Logger logger) {
 		this.callback = callback;
 		this.eventHandler = eventHandler;
+		this.logger = logger;
 	}
 
 	public Object invoke(Object proxy, Method method, Object[] args)
@@ -47,7 +52,7 @@ public class WindowCallbackProxy implements InvocationHandler {
 						&& event instanceof MotionEvent
 						&& (((MotionEvent) event).getActionMasked() == MotionEvent.ACTION_DOWN || ((MotionEvent) event)
 								.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN)) {
-					// if the motion event was for
+					logger.log(LogLevel.VERBOSE, "Touch event received.");
 					eventHandler.onTouchEventReceived();
 				}
 			}

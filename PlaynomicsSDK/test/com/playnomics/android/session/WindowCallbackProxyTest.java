@@ -16,6 +16,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.playnomics.android.session.TouchEventHandler;
 import com.playnomics.android.session.WindowCallbackProxy;
+import com.playnomics.android.util.Logger;
+import com.playnomics.android.util.UnitTestLogWriter;
 
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,6 +32,7 @@ import android.view.accessibility.AccessibilityEvent;
 @PrepareForTest({ Window.class, MotionEvent.class })
 public class WindowCallbackProxyTest {
 
+	private Logger logger;
 	private static int touchCount = 0;
 	private static Window.Callback stubCallback;
 	private MotionEvent motionEventMock;
@@ -109,7 +112,9 @@ public class WindowCallbackProxyTest {
 	@Before
 	public void setUp() throws Exception {
 		motionEventMock = PowerMockito.mock(MotionEvent.class);
+		
 		touchCount = 0;
+		logger = new Logger(new UnitTestLogWriter());
 	}
 
 	@After
@@ -122,7 +127,7 @@ public class WindowCallbackProxyTest {
 				MotionEvent.ACTION_DOWN);
 
 		stubCallback = WindowCallbackProxy.newCallbackProxyForActivity(
-				stubCallback, handlerMock);
+				stubCallback, handlerMock, logger);
 		stubCallback.dispatchTouchEvent(motionEventMock);
 
 		assertEquals("Touch event received in original callback", 1, touchCount);
@@ -135,7 +140,7 @@ public class WindowCallbackProxyTest {
 				MotionEvent.ACTION_POINTER_DOWN);
 
 		stubCallback = WindowCallbackProxy.newCallbackProxyForActivity(
-				stubCallback, handlerMock);
+				stubCallback, handlerMock, logger);
 		stubCallback.dispatchTouchEvent(motionEventMock);
 
 		assertEquals("Touch event received in original callback", 1, touchCount);
@@ -148,7 +153,7 @@ public class WindowCallbackProxyTest {
 				MotionEvent.ACTION_UP);
 
 		stubCallback = WindowCallbackProxy.newCallbackProxyForActivity(
-				stubCallback, handlerMock);
+				stubCallback, handlerMock, logger);
 		stubCallback.dispatchTouchEvent(motionEventMock);
 
 		assertEquals("Touch event received in original callback", 1, touchCount);

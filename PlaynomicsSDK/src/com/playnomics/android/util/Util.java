@@ -170,7 +170,7 @@ public class Util implements IRandomGenerator {
 		Window.Callback currentCallback = activity.getWindow().getCallback();
 		activity.getWindow().setCallback(
 				WindowCallbackProxy.newCallbackProxyForActivity(
-						currentCallback, handler));
+						currentCallback, handler, logger));
 	}
 
 	public void removeWindowCallback(Activity activity) {
