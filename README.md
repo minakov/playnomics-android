@@ -139,7 +139,7 @@ public static void showPlacement(String placementName, Activity activity);
     </tbody>
 </table>
 
-Optionally, associate an implementation of the `IPlaynomicsPlacementDelegate` interface, to process rich data callbacks. See [Rich Data Callbacks](https://github.com/playnomics/playnomics-android/wiki/Rich-Data-Callbacks) for more information.
+Optionally, associate an implementation of the `IPlaynomicsPlacementDelegate` interface, to process rich data callbacks. See [Using Rich Data Callbacks](#using-rich-data-callbacks) for more information.
 
 ```java
 public static void showPlacement(String placementName, Activity activity,
@@ -197,7 +197,7 @@ public interface IPlaynomicsPlacementDelegate {
 
 For each of these events, your delegate may also receive Rich Data that has been tied with this creative. Rich Data is a JSON message that you can associate with your message creative. In all cases, the `jsonData` value can be `null`.
 
-The actual contents of your JSON message can be delayed until the time of the messaging campaign configuration. However, the structure of your message needs to be decided before you can process it in your application. See [example use-cases for rich data](#example-use-cases-for-rich-data) below.
+The actual contents of your JSON message can be delayed until the time of the messaging campaign configuration. However, the structure of your message needs to be decided before you can process it in your application. See [example use-cases for rich data](https://github.com/playnomics/playnomics-android/wiki/Rich-Data-Callbacks).
 
 ## Validate Integration
 After you've finished the installation, you should verify that your application is correctly integrated by checkout the integration verification section of your application page.
@@ -372,7 +372,6 @@ Push Notifications
 ==================
 
 To set up push notifications, please view the [wiki page](https://github.com/playnomics/playnomics-android/wiki/Push-Notifications-for-Android).
-
 
 Support Issues
 ==============
