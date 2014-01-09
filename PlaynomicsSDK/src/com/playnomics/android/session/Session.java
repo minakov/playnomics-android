@@ -28,8 +28,6 @@ import com.playnomics.android.push.GcmManager;
 import com.playnomics.android.push.GcmManager.ICloudMessagingHandler;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
 import com.playnomics.android.sdk.IPlacementDelegate;
-import com.playnomics.android.sdk.IPlaynomicsPlacementDelegate;
-import com.playnomics.android.sdk.IPlaynomicsPlacementRawDelegate;
 import com.playnomics.android.sdk.IPushConfig;
 import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.util.CacheFile;
@@ -73,6 +71,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	//push notifications
 	
 	private String unprocessedRegistrationId;
+	private String unprocessedPushInteractionUrl;
 	
 	private IPushNotificationDelegate notificationDelegate;
 	
@@ -255,6 +254,13 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				//to the API
 				onDeviceRegistered(unprocessedRegistrationId);
 				unprocessedRegistrationId = null;
+			}
+			
+			if(unprocessedPushInteractionUrl != null){
+				//if we received a push notification before the session was started,
+				//so process it now
+				onPushNotificationInteracted(unprocessedPushInteractionUrl);
+				unprocessedPushInteractionUrl = null;
 			}
 			
 			eventWorker.start();
@@ -486,12 +492,15 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	
 	@Override
 	public void onPushNotificationInteracted(String pushInteractedUrl){
-		StringBuilder builder = new StringBuilder(pushInteractedUrl);
-		builder.append(String.format("&a=%d", applicationId));
-		builder.append(String.format("&u=%s", userId));
-		builder.append(String.format("&androidId=%s", getAndroidId()));
-		builder.append(String.format("&pt=%s", contextWrapper.getPushRegistrationId()));
-		
-		processUrlCallback(pushInteractedUrl);
+		if(sessionState == SessionState.NOT_STARTED){
+			unprocessedPushInteractionUrl = pushInteractedUrl;
+		} else {
+			StringBuilder builder = new StringBuilder(pushInteractedUrl);
+			builder.append(String.format("&a=%d", applicationId));
+			builder.append(String.format("&u=%s", userId));
+			builder.append(String.format("&androidId=%s", getAndroidId()));
+			builder.append(String.format("&pt=%s", contextWrapper.getPushRegistrationId()));
+			processUrlCallback(builder.toString());
+		}
 	}
 }
