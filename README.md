@@ -379,6 +379,8 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.2.0
+* Internal refactoring for Unity SDK
 
 #### Version 1.1.1
 * Bug fix session needs to be reset after significant session downtime
