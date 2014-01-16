@@ -225,8 +225,9 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					Util.TIME_ZONE_GMT);
 			threeMinutesAgo.add(Calendar.MINUTE, -3);
 
-			boolean sessionLapsed = (lastEventTime != null && lastEventTime
-					.compareTo(threeMinutesAgo) < 0) || lastSessionId == null;
+			boolean sessionLapsed = lastEventTime == null || 
+					(lastEventTime != null && lastEventTime.compareTo(threeMinutesAgo) < 0) || 
+					lastSessionId == null;
 
 			ImplicitEvent implicitEvent;
 			if (sessionLapsed) {
@@ -349,9 +350,10 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					getSessionInfo(), instanceId, sessionStartTime,
 					sequence.get(), touchEvents.get(), allTouchEvents.get());
 			eventQueue.enqueueEvent(event);
-			// reset the touch events
+			//reset the touch events
 			touchEvents.set(0);
-
+			//update the last event time
+			contextWrapper.setLastEventTime(event.getEventTime());
 		} catch (UnsupportedEncodingException exception) {
 			logger.log(LogLevel.ERROR, exception, "Could not log appRunning");
 		}
