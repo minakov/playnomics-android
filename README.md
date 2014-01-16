@@ -379,6 +379,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.2.1
+* Bug fix for session state management. Important for engagement tracking.
+
 #### Version 1.2.0
 * Internal refactoring for Unity SDK
 
