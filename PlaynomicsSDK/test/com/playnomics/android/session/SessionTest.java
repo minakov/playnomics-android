@@ -410,11 +410,12 @@ public class SessionTest {
 	}
 
 	@Test
-	public void testResumeAppStart() {
+	public void testResumeAppStart() throws InterruptedException {
 		when(config.getAppPauseTimeoutMinutes()).thenReturn(0);
 		
 		testStartNewDevice();
 		session.pause();
+		Thread.sleep(500);
 		session.resume();
 		
 		Object pauseEvent = eventQueue.queue.remove();
