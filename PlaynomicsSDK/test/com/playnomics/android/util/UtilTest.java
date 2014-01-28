@@ -1,7 +1,6 @@
 package com.playnomics.android.util;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,7 +11,7 @@ import org.junit.Test;
 import com.playnomics.android.util.Logger;
 import com.playnomics.android.util.Util;
 
-public class UtilTests {
+public class UtilTest {
 	private Logger logger = new Logger(new UnitTestLogWriter());
 
 	@BeforeClass
