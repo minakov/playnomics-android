@@ -55,12 +55,6 @@ public class EventWorker implements IEventWorker {
 		if (!running.getAndSet(false)) {
 			return;
 		}
-
-		try {
-			thread.join();
-		} catch (InterruptedException ex) {
-			logger.log(LogLevel.WARNING, ex);
-		}
 	}
 
 	private void stopWithRestart(){
