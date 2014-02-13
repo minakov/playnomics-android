@@ -55,6 +55,8 @@ public class EventWorker implements IEventWorker {
 		if (!running.getAndSet(false)) {
 			return;
 		}
+
+		thread.interrupt();
 	}
 
 	private void stopWithRestart(){
