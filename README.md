@@ -379,6 +379,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.2.2
+* Fix for Application Not Responding error when pausing Activity with no network connectivity.
+
 #### Version 1.2.1
 * Bug fix for session state management. Important for engagement tracking.
 
