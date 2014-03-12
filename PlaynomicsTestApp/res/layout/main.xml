@@ -57,4 +57,19 @@
        android:layout_height="wrap_content"
        android:text="Messaging Third Party Ad"
        android:onClick="onThirdPartyAdClick" />
+
+     <Button
+       android:id="@+id/fetchUserSegmentIds"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="Fetch User Segment Ids"
+       android:onClick="onFetchUserSegementIdsClick" />
+
+     <Button
+       android:id="@+id/launchMore"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="More..."
+       android:onClick="onLaunchMoreTest" />
+     
 </LinearLayout>

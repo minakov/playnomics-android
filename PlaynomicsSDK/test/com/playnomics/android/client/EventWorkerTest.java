@@ -81,18 +81,6 @@ public class EventWorkerTest {
 		assertTrue("Unprocessed is empty", unprocessed.isEmpty());
 	}
 	
-	@Test
-	public void testRequestFailures() throws IOException, InterruptedException{
-		when(connectionMock.getResponseCode()).thenReturn(404);
-		queue.enqueueEvent(event);
-		worker.start();
-		Thread.sleep(1500);
-		worker.stop();
-		
-		Set<String> unprocessed = worker.getAllUnprocessedEvents();
-		assertFalse("Unprocessed is not empty", unprocessed.isEmpty());
-	}
-	
 	@Test()
 	public void testRequestThrowsException() throws InterruptedException, IOException{
 		when(connectionMock.getResponseCode()).thenThrow(new IOException());

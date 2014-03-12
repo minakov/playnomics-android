@@ -14,6 +14,10 @@ public interface IConfig {
 
 	public String getMessagingUrl();
 
+	public void setOverrideApiUrl(String ApiUrl);
+
+	public String getApiUrl();
+
 	public String getApplicationIdKey();
 
 	public String getUserIdKey();
@@ -107,4 +111,6 @@ public interface IConfig {
 	public String getMessagingLanguageKey();
 	
 	public String getCacheFileName();
+	
+	public String getUserSegmentsPath();
 }

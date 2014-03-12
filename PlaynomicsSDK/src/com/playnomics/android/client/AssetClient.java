@@ -19,6 +19,11 @@ public class AssetClient {
 	public class AssetResponse {
 
 		private ResponseStatus status;
+		private int responseCode;
+
+		public int getResponseCode() {
+			return responseCode;
+		}
 
 		public ResponseStatus getStatus() {
 			return status;
@@ -45,17 +50,20 @@ public class AssetClient {
 		public AssetResponse(String requestUrl, Exception exception) {
 			this.status = ResponseStatus.FAILURE;
 			this.requestUrl = requestUrl;
+			this.responseCode = 0;
 		}
 
 		public AssetResponse(String requestUrl, byte[] data) {
 			this.status = ResponseStatus.SUCCESS;
 			this.requestUrl = requestUrl;
 			this.data = data;
+			this.responseCode = 200;
 		}
 
-		public AssetResponse(String requestUrl, ResponseStatus status) {
+		public AssetResponse(String requestUrl, ResponseStatus status, int responseCode) {
 			this.status = status;
 			this.requestUrl = requestUrl;
+			this.responseCode = responseCode;
 		}
 	}
 
@@ -84,7 +92,7 @@ public class AssetClient {
 		try {
 			connection = connectionFactory.startConnectionForUrl(url);
 			if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-				response = new AssetResponse(url, ResponseStatus.FAILURE);
+				response = new AssetResponse(url, ResponseStatus.FAILURE, connection.getResponseCode());
 			} else {
 				InputStream inputStream = connection.getInputStream();
 				int bufferSize = 1024 * 4;// 4KB

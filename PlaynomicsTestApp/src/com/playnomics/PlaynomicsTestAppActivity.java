@@ -2,25 +2,30 @@ package com.playnomics;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
 import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.sdk.Playnomics;
+import com.playnomics.android.sdk.IPlaynomicsSegmentationDelegate;
 import com.playnomics.android.util.Logger.LogLevel;
 
 public class PlaynomicsTestAppActivity 
 	extends Activity 
-	implements IGoogleCloudMessageConfig, IPushNotificationDelegate {
+	implements IGoogleCloudMessageConfig, IPushNotificationDelegate, IPlaynomicsSegmentationDelegate {
 	
+	private static final int PICTURE_RESULT = 0;
 	private static boolean preloaded = false;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		final long applicationId = 2143315484923938870L;
@@ -29,7 +34,7 @@ public class PlaynomicsTestAppActivity
 		
 		Playnomics.setLogLevel(LogLevel.VERBOSE);
 		//Playnomics.setTestMode(false);
-		Playnomics.start(this, applicationId);
+		Playnomics.start(this, applicationId, "5818fa2f3e0094c2");
 		Playnomics.enablePushNotifications(this, this);
 		
 		if(!preloaded){
@@ -91,6 +96,15 @@ public class PlaynomicsTestAppActivity
  		setupPlacement("e45c59f627043701");
 	}
 	
+	public void onFetchUserSegementIdsClick(View view){
+		Playnomics.fetchUserSegmentIds(this);
+	}
+
+	public void onLaunchMoreTest(View view){
+		Intent moreTest = new Intent(this, PlaynomicsMoreTestActivity.class);   
+        this.startActivityForResult(moreTest, PICTURE_RESULT);
+	}
+
 	private void setupPlacement (String placementName){
 		RichDataFrameDelegate delegate = new RichDataFrameDelegate(placementName, getApplicationContext());
 		Playnomics.showPlacement(placementName, this, delegate);
@@ -140,4 +154,23 @@ public class PlaynomicsTestAppActivity
             }
         }
 	}
+
+	@Override
+	public void onFetchedUserSegmentIds(List<Long> segmentationIds) {
+		Log.d(this.getClass().getName(), String.format("UserSegmentIds %s", segmentationIds==null?"null":segmentationIds.toString()));
+		postToastMessage("UserSegmentIds " + segmentationIds==null?"null":segmentationIds.toString());
+	}
+
+	@Override
+	public void onFetchedUserSegmentIdsError(String error, String description) {
+		Log.d(this.getClass().getName(), String.format("Error UserSegmentIds  %s", error==null?"null":error));
+		postToastMessage("Error UserSegmentIds " + error + " " + description);
+	}
+
+	public void postToastMessage(final String message){
+		int duration = Toast.LENGTH_LONG;
+		Toast toast = Toast.makeText(getApplicationContext(), message, duration);
+		toast.show();
+	}
+
 }

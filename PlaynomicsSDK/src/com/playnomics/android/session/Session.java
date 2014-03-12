@@ -14,6 +14,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.playnomics.android.client.IEventQueue;
 import com.playnomics.android.client.IEventWorker;
 import com.playnomics.android.client.IHttpConnectionFactory;
+import com.playnomics.android.client.SegmentationClient;
 import com.playnomics.android.events.AppPageEvent;
 import com.playnomics.android.events.AppPauseEvent;
 import com.playnomics.android.events.AppResumeEvent;
@@ -28,6 +29,7 @@ import com.playnomics.android.push.GcmManager;
 import com.playnomics.android.push.GcmManager.ICloudMessagingHandler;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
 import com.playnomics.android.sdk.IPlacementDelegate;
+import com.playnomics.android.sdk.IPlaynomicsSegmentationDelegate;
 import com.playnomics.android.sdk.IPushConfig;
 import com.playnomics.android.sdk.IPushNotificationDelegate;
 import com.playnomics.android.util.CacheFile;
@@ -435,6 +437,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		eventQueue.enqueueEventUrl(url);
 	}
 	
+	public void fetchUserSegmentIds(final IPlaynomicsSegmentationDelegate delegate) {
+		SegmentationClient segmentationClient = new SegmentationClient(Session.this, config, logger);
+		segmentationClient.fetchUserSegmentIds(delegate);
+	}
+
 	/* Messaging */
 	public void preloadPlacements(String[] placementNames){
 		try{

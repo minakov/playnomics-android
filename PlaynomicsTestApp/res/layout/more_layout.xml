@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/launchBrowser"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onLaunchBrowser"
+        android:text="Launch Browser" />
+
+    <Button
+        android:id="@+id/launchCamera"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onLaunchCamera"
+        android:text="Launch Camera" />
+
+    <Button
+        android:id="@+id/sendNotification"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onSendNotification"
+        android:text="Send Notification" />
+
+</LinearLayout>

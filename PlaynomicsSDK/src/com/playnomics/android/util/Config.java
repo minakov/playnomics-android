@@ -18,7 +18,23 @@ public class Config implements IConfig {
 	private String getProdMessagingUrl() {
 		return "https://ads.a.playnomics.net/v3/";
 	}
-	
+
+	private String getProdApiUrl() {
+		return "https://api.a.playnomics.net/v2/";
+	}
+
+	private String overrideApiUrl;
+	public void setOverrideApiUrl(String url) {
+		overrideApiUrl = url;
+	}
+
+	public String getApiUrl() {
+		if (!Util.stringIsNullOrEmpty(overrideApiUrl)) {
+			return overrideApiUrl;
+		}
+		return getProdApiUrl();
+	}
+
 	private String overrideEventsUrl;
 	public void setOverrideEventsUrl(String url) {
 		overrideEventsUrl = url;
@@ -230,6 +246,10 @@ public class Config implements IConfig {
 
 	public String getCacheFileName() {
 		return "playnomicsEventList";
+	}
+	
+	public String getUserSegmentsPath() {
+		return "userSegments";
 	}
 }
 

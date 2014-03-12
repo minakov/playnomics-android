@@ -174,4 +174,10 @@ public class Playnomics {
 		Session session = getInstance();
 		session.enablePushNotifications(pushConfig, notificationDelegate);
 	}
+
+	public static void fetchUserSegmentIds(final IPlaynomicsSegmentationDelegate delegate) {
+		Session session = getInstance();
+		session.fetchUserSegmentIds(delegate);
+	}
+
 }
