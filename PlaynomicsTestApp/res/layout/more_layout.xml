@@ -6,6 +6,13 @@
     android:orientation="vertical" >
 
     <Button
+        android:id="@+id/sendGenderAndYear"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onSendUserGenderAndYear"
+        android:text="Send Gender And Year" />
+
+    <Button
         android:id="@+id/launchBrowser"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

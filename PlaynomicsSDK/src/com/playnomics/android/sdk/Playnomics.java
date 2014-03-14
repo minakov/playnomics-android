@@ -180,4 +180,14 @@ public class Playnomics {
 		session.fetchUserSegmentIds(delegate);
 	}
 
+	public static void setUserGender(String gender) {
+		Session session = getInstance();
+		session.setUserGender(gender);
+	}
+
+	public static void setUserBirthYear(int year) {
+		Session session = getInstance();
+		session.setUserBirthYear(year);
+	}
+
 }

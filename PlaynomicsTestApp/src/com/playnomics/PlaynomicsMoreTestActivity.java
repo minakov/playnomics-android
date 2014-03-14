@@ -43,6 +43,11 @@ public class PlaynomicsMoreTestActivity extends Activity {
         this.startActivityForResult(camera, PICTURE_RESULT);
 	}
 
+	public void onSendUserGenderAndYear(View view){
+		Playnomics.setUserGender("M");
+		Playnomics.setUserBirthYear(2014);
+	}
+
 	public void onSendNotification(View view){
 		// prepare intent which is triggered if the
 		// notification is selected

@@ -128,6 +128,14 @@ public class Config implements IConfig {
 		return "p";
 	}
 
+	public String getUserInfoGenderKey() {
+		return "px";
+	}
+
+	public String getUserInfoBirthYearKey() {
+		return "pb";
+	}
+
 	public String getUserInfoTypeKey() {
 		return "pt";
 	}

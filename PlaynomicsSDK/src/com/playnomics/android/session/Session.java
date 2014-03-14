@@ -450,6 +450,30 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		segmentationClient.fetchUserSegmentIds(delegate);
 	}
 
+	public void setUserGender(String gender) {
+		try {
+			assertSessionStarted();
+			UserInfoEvent event = new UserInfoEvent(config,
+					getSessionInfo());
+			event.setGender(gender);
+			eventQueue.enqueueEvent(event);
+		} catch (Exception ex) {
+			logger.log(LogLevel.ERROR, ex, "Could not send user gender");
+		}
+	}
+
+	public void setUserBirthYear(int year) {
+		try {
+			assertSessionStarted();
+			UserInfoEvent event = new UserInfoEvent(config,
+					getSessionInfo());
+			event.setBirthYear(year);
+			eventQueue.enqueueEvent(event);
+		} catch (Exception ex) {
+			logger.log(LogLevel.ERROR, ex, "Could not send user birth year");
+		}
+	}
+
 	/* Messaging */
 	public void preloadPlacements(String[] placementNames){
 		try{

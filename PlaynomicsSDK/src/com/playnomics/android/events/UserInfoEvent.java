@@ -35,6 +35,21 @@ public class UserInfoEvent extends ExplicitEvent {
 		appendParameter(config.getUserInfoTypeKey(), "update");
 	}
 
+	public UserInfoEvent(IConfig config, GameSessionInfo sessionInfo) {
+		super(config, sessionInfo);
+		appendParameter(config.getUserInfoTypeKey(), "update");
+	}
+
+	public void setGender(String gender) {
+		if (gender!=null)
+			appendParameter(config.getUserInfoGenderKey(), gender);
+	}
+
+	public void setBirthYear(int birthYear) {
+		if (birthYear>0)
+			appendParameter(config.getUserInfoBirthYearKey(), birthYear);
+	}
+
 	@Override
 	public String getUrlPath() {
 		return config.getEventPathUserInfo();

@@ -88,4 +88,33 @@ public class UserInfoEventTest extends PlaynomicsEventTest {
 		assertEquals("AppVersion is set", appVersion, params.get(config.getAppVersionKey()));
 	}
 
+
+	@Test
+	public void testUserInfoUserGender() {
+		GameSessionInfo sessionInfo = getGameSessionInfo();
+		IConfig config = new Config();
+
+		String gender = "M";
+		UserInfoEvent event = new UserInfoEvent(config, sessionInfo);
+		testCommonEventParameters(config, event, sessionInfo);
+		event.setGender(gender);
+
+		Map<String, Object> params = event.getEventParameters();
+		assertEquals("gender is set", gender, params.get(config.getUserInfoGenderKey()));
+	}
+
+	@Test
+	public void testUserInfoUserBithYear() {
+		GameSessionInfo sessionInfo = getGameSessionInfo();
+		IConfig config = new Config();
+
+		int year = 2014;
+		UserInfoEvent event = new UserInfoEvent(config, sessionInfo);
+		testCommonEventParameters(config, event, sessionInfo);
+		event.setBirthYear(year);
+
+		Map<String, Object> params = event.getEventParameters();
+		assertEquals("year is set", year, params.get(config.getUserInfoBirthYearKey()));
+	}
+
 }

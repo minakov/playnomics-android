@@ -111,7 +111,7 @@ public class ContextWrapper {
 		String cachedVersionName = getApplicationVersionName();
 		String currentVersionName = getCurrentAppVersionName();
 		if ( (cachedVersion != currentVersion) ||
-			 (currentVersionName.compareTo(cachedVersionName)!=0) ) {
+			 (currentVersionName!=null && currentVersionName.compareTo(cachedVersionName)!=0) ) {
 			setApplicationVersion(currentVersion);
 			setApplicationVersionName(currentVersionName);
 			// the push ID is no longer valid

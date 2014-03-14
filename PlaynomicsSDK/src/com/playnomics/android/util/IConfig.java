@@ -52,6 +52,10 @@ public interface IConfig {
 
 	public String getSessionPauseTimeKey();
 
+	public String getUserInfoGenderKey();
+
+	public String getUserInfoBirthYearKey();
+
 	public String getUserInfoTypeKey();
 
 	public String getUserInfoSourceKey();
