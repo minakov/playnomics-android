@@ -10,6 +10,7 @@ public class ContextWrapper {
 	static final String LAST_EVENT_TIME_CACHE_KEY = "lastEventTime";
 	static final String SESSION_START_TIME_CACHE_KEY = "sessionStartTime";
 	static final String APP_VERSION_CACHE_KEY = "appVersion";
+	static final String APP_VERSION_NAME_CACHE_KEY = "appVersionName";
 	static final String SESSION_ID_KEY = "sessionId";
 
 	static final int DEFAULT_CACHE_VALUE = -1;
@@ -85,20 +86,43 @@ public class ContextWrapper {
 		editor.commit();
 	}
 
-	private int getCurrentAppVersion() {
+	public int getCurrentAppVersion() {
 		return util.getApplicationVersionFromContext(context);
 	}
 
-	public boolean pushSettingsOutdated() {
+	public String getApplicationVersionName() {
+		return preferences.getString(ContextWrapper.APP_VERSION_NAME_CACHE_KEY,
+				null);
+	}
+
+	private void setApplicationVersionName(String version) {
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(ContextWrapper.APP_VERSION_NAME_CACHE_KEY, version);
+		editor.commit();
+	}
+
+	public String getCurrentAppVersionName() {
+		return util.getApplicationVersionStringFromContext(context);
+	}
+
+	public boolean isAppVersionChanged() {
 		int cachedVersion = getApplicationVersion();
 		int currentVersion = getCurrentAppVersion();
-		if (cachedVersion != currentVersion) {
+		String cachedVersionName = getApplicationVersionName();
+		String currentVersionName = getCurrentAppVersionName();
+		if ( (cachedVersion != currentVersion) ||
+			 (currentVersionName.compareTo(cachedVersionName)!=0) ) {
 			setApplicationVersion(currentVersion);
+			setApplicationVersionName(currentVersionName);
 			// the push ID is no longer valid
 			setPushRegistrationId(null);
 			return true;
 		}
 		return false;
+	}
+
+	public boolean pushSettingsOutdated() {
+		return Util.stringIsNullOrEmpty(getPushRegistrationId());
 	}
 
 	private EventTime getEventTimeValue(String key) {

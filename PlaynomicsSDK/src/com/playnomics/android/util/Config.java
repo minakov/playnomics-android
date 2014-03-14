@@ -76,6 +76,10 @@ public class Config implements IConfig {
 		return "t";
 	}
 
+	public String getAppVersionKey() {
+		return "aver";
+	}
+
 	public String getSdkVersionKey() {
 		return "ever";
 	}

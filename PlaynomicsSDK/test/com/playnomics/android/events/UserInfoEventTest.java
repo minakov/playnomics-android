@@ -73,4 +73,19 @@ public class UserInfoEventTest extends PlaynomicsEventTest {
 		assertEquals("Push ID is set", pushRegistrationId,
 				params.get("pushTok"));
 	}
+	
+	@Test
+	public void testUserInfoAppVersion() {
+		GameSessionInfo sessionInfo = getGameSessionInfo();
+		IConfig config = new Config();
+
+		String appVersion = "1.0";
+		UserInfoEvent event = new UserInfoEvent(config, sessionInfo, config.getAppVersionKey(),
+				appVersion);
+		testCommonEventParameters(config, event, sessionInfo);
+
+		Map<String, Object> params = event.getEventParameters();
+		assertEquals("AppVersion is set", appVersion, params.get(config.getAppVersionKey()));
+	}
+
 }

@@ -166,8 +166,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					//Google Cloud Messaging;
 					GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
 					
-					if(Util.stringIsNullOrEmpty(contextWrapper.getPushRegistrationId()) 
-							|| contextWrapper.pushSettingsOutdated()){
+					if(contextWrapper.pushSettingsOutdated()){
 						//settings are out-dated, so we need to get a new registration ID
 						int resultCode = util.getGooglePlayServiceStatus(contextWrapper.getContext());
 						
@@ -231,8 +230,10 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					(lastEventTime != null && lastEventTime.compareTo(threeMinutesAgo) < 0) || 
 					lastSessionId == null;
 
+			UserInfoEvent userInfoEvent = null;
 			ImplicitEvent implicitEvent;
-			if (sessionLapsed) {
+			boolean isAppVersionChanged = contextWrapper.isAppVersionChanged();
+			if (sessionLapsed || isAppVersionChanged) {
 				sessionId = new LargeGeneratedId(util);
 				instanceId = sessionId;
 
@@ -241,6 +242,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				sessionStartTime = implicitEvent.getEventTime();
 				contextWrapper.setLastSessionStartTime(sessionStartTime);
 				contextWrapper.setPreviousSessionId(sessionId);
+				if (isAppVersionChanged) {
+					userInfoEvent = new UserInfoEvent(config, getSessionInfo(),
+							config.getAppVersionKey(),
+							contextWrapper.getApplicationVersionName());
+				}
 			} else {
 				sessionId = lastSessionId;
 				instanceId = new LargeGeneratedId(util);
@@ -248,9 +254,11 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 						instanceId);
 				sessionStartTime = contextWrapper.getLastSessionStartTime();
 			}
-			
+
 			eventQueue.enqueueEvent(implicitEvent);
-			
+			if (userInfoEvent!=null) {
+				eventQueue.enqueueEvent(userInfoEvent);
+			}
 			if(unprocessedRegistrationId != null){
 				//if we received a push registration ID 
 				//before we could start the session, send this registration ID

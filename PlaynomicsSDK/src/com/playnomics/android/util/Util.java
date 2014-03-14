@@ -69,6 +69,21 @@ public class Util implements IRandomGenerator {
 		}
 	}
 
+	public String getApplicationVersionStringFromContext(Context context) {
+		try {
+			PackageManager packageManager = context.getPackageManager();
+			PackageInfo info;
+			info = packageManager.getPackageInfo(context.getPackageName(), 0);
+			return info.versionName;
+		} catch (NameNotFoundException ex) {
+			// according to Google's docs this should never happen
+			logger.log(LogLevel.WARNING, ex,
+					"Could not obtain the application version from the package manager");
+			// in the event of a failure always return a -1
+			return null;
+		}
+	}
+
 	public void startUriIntent(String uri, Context context) {
 		
 		try{

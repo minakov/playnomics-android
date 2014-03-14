@@ -28,6 +28,13 @@ public class UserInfoEvent extends ExplicitEvent {
 		appendParameter(config.getUserInfoTypeKey(), "update");
 	}
 
+	public UserInfoEvent(IConfig config, GameSessionInfo sessionInfo,
+			String key, String value) {
+		super(config, sessionInfo);
+		appendParameter(key, value);
+		appendParameter(config.getUserInfoTypeKey(), "update");
+	}
+
 	@Override
 	public String getUrlPath() {
 		return config.getEventPathUserInfo();

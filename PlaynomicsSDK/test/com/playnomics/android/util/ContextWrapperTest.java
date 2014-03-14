@@ -187,7 +187,7 @@ public class ContextWrapperTest {
 				oldVersion);
 
 		assertFalse("No changes to device settings",
-				contextWrapper.pushSettingsOutdated());
+				contextWrapper.isAppVersionChanged());
 	}
 
 	@Test
@@ -203,7 +203,7 @@ public class ContextWrapperTest {
 				oldVersion);
 		// push id is reset
 		assertTrue("Changes to device settings",
-				contextWrapper.pushSettingsOutdated());
+				contextWrapper.isAppVersionChanged());
 		// the push ID is cleared
 		verify(editorMock).putString(ContextWrapper.PUSH_ID_CACHE_KEY, null);
 		// app version is set

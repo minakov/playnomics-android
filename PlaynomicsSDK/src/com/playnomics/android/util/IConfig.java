@@ -30,6 +30,8 @@ public interface IConfig {
 
 	public String getSdkNameKey();
 
+	public String getAppVersionKey();
+
 	public String getTimeZoneOffsetKey();
 
 	public String getSequenceKey();
