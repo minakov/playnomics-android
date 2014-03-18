@@ -290,6 +290,12 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			if (sessionState != SessionState.STARTED || applicationId == null) {
 				return;
 			}
+			if (producer.isRunningForLongTime()) {
+				// running for a long time queue appRunning
+				queueAppRunningEvent();
+			}
+			producer.stop();
+
 			sessionPauseTime = new EventTime();
 			AppPauseEvent event = new AppPauseEvent(config, getSessionInfo(),
 					instanceId, sessionStartTime, sequence.get(),
@@ -297,8 +303,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			sequence.incrementAndGet();
 			eventQueue.enqueueEvent(event);
 			eventWorker.stop();
-			producer.stop();
-			
+
 			Set<String> unprocessUrls = eventWorker.getAllUnprocessedEvents();
 			Runnable writeTask = cacheFile.writeSetToFile(unprocessUrls);
 			util.startTaskOnBackgroundThread(writeTask);
@@ -353,7 +358,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		}
 	}
 
-	public void onHeartBeat(long heartBeatIntervalSeconds) {
+	public void queueAppRunningEvent() {
 		try {
 			sequence.incrementAndGet();
 			AppRunningEvent event = new AppRunningEvent(config,
@@ -367,6 +372,10 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		} catch (UnsupportedEncodingException exception) {
 			logger.log(LogLevel.ERROR, exception, "Could not log appRunning");
 		}
+	}
+
+	public void onHeartBeat(long heartbeatIntervalInMillSeconds) {
+		queueAppRunningEvent();
 	}
 
 	public void onTouchEventReceived() {
