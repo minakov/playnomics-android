@@ -23,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.view.Window;
 
@@ -203,5 +204,24 @@ public class Util implements IRandomGenerator {
 		Thread thread = new Thread(task);
 		thread.start();
 		return thread;
+	}
+
+	public static String getDeviceName() {
+		String manufacturer = Build.MANUFACTURER;
+		String model = Build.MODEL;
+		if (model.startsWith(manufacturer)) {
+			return model;
+		}
+		return manufacturer + " " + model;
+	}
+
+	public static String getAndroidOSVersion() {
+		return Build.VERSION.RELEASE;
+	}
+
+	public static int safeStringCompare(String s1, String s2) {
+		if (s1==null || s2==null)
+			return -1;
+		return s1.compareTo(s2);
 	}
 }

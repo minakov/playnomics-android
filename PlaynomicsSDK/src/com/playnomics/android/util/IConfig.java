@@ -32,6 +32,10 @@ public interface IConfig {
 
 	public String getAppVersionKey();
 
+	public String getDeviceModelKey();
+
+	public String getDeviceOSVersionKey();
+
 	public String getTimeZoneOffsetKey();
 
 	public String getSequenceKey();

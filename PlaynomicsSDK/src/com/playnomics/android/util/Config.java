@@ -80,6 +80,14 @@ public class Config implements IConfig {
 		return "aver";
 	}
 
+	public String getDeviceModelKey() {
+		return "model";
+	}
+
+	public String getDeviceOSVersionKey() {
+		return "osver";
+	}
+
 	public String getSdkVersionKey() {
 		return "ever";
 	}

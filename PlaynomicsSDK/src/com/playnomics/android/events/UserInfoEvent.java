@@ -50,6 +50,21 @@ public class UserInfoEvent extends ExplicitEvent {
 			appendParameter(config.getUserInfoBirthYearKey(), birthYear);
 	}
 
+	public void setAppVersion(String appVersion) {
+		if (appVersion!=null)
+			appendParameter(config.getAppVersionKey(), appVersion);
+	}
+
+	public void setDeviceModel(String deviceModel) {
+		if (deviceModel!=null)
+			appendParameter(config.getDeviceModelKey(), deviceModel);
+	}
+
+	public void setDeviceOSVersion(String deviceOSVersion) {
+		if (deviceOSVersion!=null)
+			appendParameter(config.getDeviceOSVersionKey(), deviceOSVersion);
+	}
+
 	@Override
 	public String getUrlPath() {
 		return config.getEventPathUserInfo();

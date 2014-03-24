@@ -230,7 +230,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					(lastEventTime != null && lastEventTime.compareTo(threeMinutesAgo) < 0) || 
 					lastSessionId == null;
 
-			UserInfoEvent userInfoEvent = null;
 			ImplicitEvent implicitEvent;
 			boolean isAppVersionChanged = contextWrapper.isAppVersionChanged();
 			if (sessionLapsed || isAppVersionChanged) {
@@ -242,11 +241,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				sessionStartTime = implicitEvent.getEventTime();
 				contextWrapper.setLastSessionStartTime(sessionStartTime);
 				contextWrapper.setPreviousSessionId(sessionId);
-				if (isAppVersionChanged) {
-					userInfoEvent = new UserInfoEvent(config, getSessionInfo(),
-							config.getAppVersionKey(),
-							contextWrapper.getApplicationVersionName());
-				}
 			} else {
 				sessionId = lastSessionId;
 				instanceId = new LargeGeneratedId(util);
@@ -256,9 +250,15 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			}
 
 			eventQueue.enqueueEvent(implicitEvent);
-			if (userInfoEvent!=null) {
+			boolean isAndroidVersionChanged = contextWrapper.isAndroidVersionChanged();
+			if (isAppVersionChanged || isAndroidVersionChanged) {
+				UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo());
+				userInfoEvent.setAppVersion(contextWrapper.getApplicationVersionName());
+				userInfoEvent.setDeviceModel(Util.getDeviceName());
+				userInfoEvent.setDeviceOSVersion(Util.getAndroidOSVersion());
 				eventQueue.enqueueEvent(userInfoEvent);
 			}
+
 			if(unprocessedRegistrationId != null){
 				//if we received a push registration ID 
 				//before we could start the session, send this registration ID
@@ -266,7 +266,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				onDeviceRegistered(unprocessedRegistrationId);
 				unprocessedRegistrationId = null;
 			}
-			
+
 			if(unprocessedPushInteractionUrl != null){
 				//if we received a push notification before the session was started,
 				//so process it now
@@ -387,16 +387,16 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 		return new GameSessionInfo(applicationId, userId, androidId, sessionId);
 	}
 
-	private void assertSessionStarted() {
+	private void assertSessionStarted(String name) {
 		if (!(getSessionState() == SessionState.STARTED || getSessionState() == SessionState.PAUSED)) {
-			throw new IllegalStateException("Session must be started");
+			throw new IllegalStateException("Session must be started " + name);
 		}
 	}
 
 	// explicit events
 	public void transactionInUSD(float priceInUSD, int quantity) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("transactionInUSD");
 			TransactionEvent event = new TransactionEvent(config, util,
 					getSessionInfo(), quantity, priceInUSD);
 			eventQueue.enqueueEvent(event);
@@ -408,7 +408,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	public void attributeInstall(String source, String campaign,
 			Date installDate) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("attributeInstall");
 			UserInfoEvent event = new UserInfoEvent(config, getSessionInfo(),
 					source, campaign, installDate);
 			eventQueue.enqueueEvent(event);
@@ -420,7 +420,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void customEvent(String customEventName) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("customEvent");
 			CustomEvent event = new CustomEvent(config, util, getSessionInfo(),
 					customEventName);
 			eventQueue.enqueueEvent(event);
@@ -432,7 +432,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	// activity pause/resume
 	public void onActivityResumed(Activity activity) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("onActivityResumed");
 			observer.observeNewActivity(activity, this);
 			messagingManager.onActivityResumed(activity);
 		} catch (Exception ex) {
@@ -442,7 +442,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void onActivityPaused(Activity activity) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("onActivityPaused");
 			observer.forgetLastActivity();
 			messagingManager.onActivityPaused(activity);
 		} catch (Exception ex) {
@@ -461,7 +461,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void setUserGender(String gender) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("setUserGender");
 			UserInfoEvent event = new UserInfoEvent(config,
 					getSessionInfo());
 			event.setGender(gender);
@@ -473,7 +473,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	public void setUserBirthYear(int year) {
 		try {
-			assertSessionStarted();
+			assertSessionStarted("setUserBirthYear");
 			UserInfoEvent event = new UserInfoEvent(config,
 					getSessionInfo());
 			event.setBirthYear(year);
@@ -486,7 +486,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	/* Messaging */
 	public void preloadPlacements(String[] placementNames){
 		try{
-			assertSessionStarted();
+			assertSessionStarted("preloadPlacements");
 			messagingManager.preloadPlacements(placementNames);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not preload placements");
@@ -495,7 +495,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	
 	public void showPlacement(String placementName, Activity activity, IPlacementDelegate delegate){
 		try{
-			assertSessionStarted();
+			assertSessionStarted("showPlacement");
 			messagingManager.showPlacement(placementName, activity, delegate);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not preload placements");
@@ -504,7 +504,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	
 	public void hidePlacement(String placementName){
 		try{
-			assertSessionStarted();
+			assertSessionStarted("hidePlacement");
 			messagingManager.hidePlacement(placementName);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not preload placements");

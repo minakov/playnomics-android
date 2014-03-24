@@ -12,6 +12,7 @@ public class ContextWrapper {
 	static final String APP_VERSION_CACHE_KEY = "appVersion";
 	static final String APP_VERSION_NAME_CACHE_KEY = "appVersionName";
 	static final String SESSION_ID_KEY = "sessionId";
+	static final String ANDROID_VERSION_CACHE_KEY = "androidVersion";
 
 	static final int DEFAULT_CACHE_VALUE = -1;
 
@@ -96,6 +97,7 @@ public class ContextWrapper {
 	}
 
 	private void setApplicationVersionName(String version) {
+		if (version==null) return;
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(ContextWrapper.APP_VERSION_NAME_CACHE_KEY, version);
 		editor.commit();
@@ -105,17 +107,38 @@ public class ContextWrapper {
 		return util.getApplicationVersionStringFromContext(context);
 	}
 
+	public String getCachedAndroidVersion() {
+		return preferences.getString(ContextWrapper.ANDROID_VERSION_CACHE_KEY,
+				null);
+	}
+
+	private void cacheAndroidVersion(String version) {
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(ContextWrapper.ANDROID_VERSION_CACHE_KEY, version);
+		editor.commit();
+	}
+
 	public boolean isAppVersionChanged() {
 		int cachedVersion = getApplicationVersion();
 		int currentVersion = getCurrentAppVersion();
 		String cachedVersionName = getApplicationVersionName();
 		String currentVersionName = getCurrentAppVersionName();
 		if ( (cachedVersion != currentVersion) ||
-			 (currentVersionName!=null && currentVersionName.compareTo(cachedVersionName)!=0) ) {
+			 (currentVersionName!=null && Util.safeStringCompare(currentVersionName, cachedVersionName)!=0) ) {
 			setApplicationVersion(currentVersion);
 			setApplicationVersionName(currentVersionName);
 			// the push ID is no longer valid
 			setPushRegistrationId(null);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isAndroidVersionChanged() {
+		String cachedVersion = getCachedAndroidVersion();
+		String currentVersion = Util.getAndroidOSVersion();
+		if (Util.safeStringCompare(currentVersion, cachedVersion)!=0) {
+			cacheAndroidVersion(currentVersion);
 			return true;
 		}
 		return false;
