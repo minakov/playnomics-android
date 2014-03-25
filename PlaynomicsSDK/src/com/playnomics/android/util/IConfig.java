@@ -34,6 +34,8 @@ public interface IConfig {
 
 	public String getDeviceModelKey();
 
+	public String getDeviceMakerKey();
+
 	public String getDeviceOSVersionKey();
 
 	public String getTimeZoneOffsetKey();

@@ -77,11 +77,15 @@ public class Config implements IConfig {
 	}
 
 	public String getAppVersionKey() {
-		return "aver";
+		return "appver";
 	}
 
 	public String getDeviceModelKey() {
 		return "model";
+	}
+
+	public String getDeviceMakerKey() {
+		return "maker";
 	}
 
 	public String getDeviceOSVersionKey() {

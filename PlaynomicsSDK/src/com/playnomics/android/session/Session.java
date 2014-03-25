@@ -231,8 +231,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					lastSessionId == null;
 
 			ImplicitEvent implicitEvent;
-			boolean isAppVersionChanged = contextWrapper.isAppVersionChanged();
-			if (sessionLapsed || isAppVersionChanged) {
+			if (sessionLapsed) {
 				sessionId = new LargeGeneratedId(util);
 				instanceId = sessionId;
 
@@ -250,14 +249,8 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			}
 
 			eventQueue.enqueueEvent(implicitEvent);
-			boolean isAndroidVersionChanged = contextWrapper.isAndroidVersionChanged();
-			if (isAppVersionChanged || isAndroidVersionChanged) {
-				UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo());
-				userInfoEvent.setAppVersion(contextWrapper.getApplicationVersionName());
-				userInfoEvent.setDeviceModel(Util.getDeviceName());
-				userInfoEvent.setDeviceOSVersion(Util.getAndroidOSVersion());
-				eventQueue.enqueueEvent(userInfoEvent);
-			}
+
+			lookForVersionChange();
 
 			if(unprocessedRegistrationId != null){
 				//if we received a push registration ID 
@@ -551,6 +544,22 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			builder.append(String.format("&androidId=%s", getAndroidId()));
 			builder.append(String.format("&pt=%s", contextWrapper.getPushRegistrationId()));
 			processUrlCallback(builder.toString());
+		}
+	}
+
+	private void lookForVersionChange() {
+		boolean isAppVersionChanged = contextWrapper.isAppVersionChanged();
+		boolean isAndroidVersionChanged = contextWrapper.isAndroidVersionChanged();
+		if (isAppVersionChanged || isAndroidVersionChanged) {
+			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo());
+			userInfoEvent.setAppVersion(contextWrapper.getApplicationVersionName());
+			userInfoEvent.setDeviceModel(Util.getDeviceModel());
+			userInfoEvent.setDeviceMaker(Util.getDeviceMaker());
+			userInfoEvent.setDeviceOSVersion(Util.getAndroidOSVersion());
+			try {
+				eventQueue.enqueueEvent(userInfoEvent);
+			} catch (UnsupportedEncodingException e) {
+			}
 		}
 	}
 }

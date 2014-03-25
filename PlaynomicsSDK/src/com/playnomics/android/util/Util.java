@@ -206,13 +206,12 @@ public class Util implements IRandomGenerator {
 		return thread;
 	}
 
-	public static String getDeviceName() {
-		String manufacturer = Build.MANUFACTURER;
-		String model = Build.MODEL;
-		if (model.startsWith(manufacturer)) {
-			return model;
-		}
-		return manufacturer + " " + model;
+	public static String getDeviceModel() {
+		return Build.MODEL;
+	}
+
+	public static String getDeviceMaker() {
+		return Build.MANUFACTURER;
 	}
 
 	public static String getAndroidOSVersion() {
