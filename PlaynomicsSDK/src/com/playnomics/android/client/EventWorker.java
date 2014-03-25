@@ -77,12 +77,15 @@ public class EventWorker implements IEventWorker {
 		while (running.get()) {
 			while (!eventQueue.isEmpty() && running.get()) {
 				String url = eventQueue.dequeueEventUrl();
+				if (url==null)
+					break;
 
 				boolean successful = false;
 				HttpURLConnection connection = null;
 				try {
 					connection = connectionFactory.startConnectionForUrl(url);
-					successful = (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
+					if (connection!=null)
+						successful = (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
 				} catch (IOException ex) {
 					logger.log(LogLevel.WARNING, ex,
 							"Could not connext to the event API. Shutting down the queue for 2 minutes ...", url);
