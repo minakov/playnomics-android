@@ -60,9 +60,9 @@ public class UserInfoEvent extends ExplicitEvent {
 			appendParameter(config.getDeviceModelKey(), deviceModel);
 	}
 
-	public void setDeviceMaker(String maker) {
-		if (maker!=null)
-			appendParameter(config.getDeviceMakerKey(), maker);
+	public void setDeviceManufacturer(String manufacturer) {
+		if (manufacturer!=null)
+			appendParameter(config.getDeviceManufacturerKey(), manufacturer);
 	}
 
 	public void setDeviceOSVersion(String deviceOSVersion) {

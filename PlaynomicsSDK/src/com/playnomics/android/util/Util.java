@@ -210,7 +210,7 @@ public class Util implements IRandomGenerator {
 		return Build.MODEL;
 	}
 
-	public static String getDeviceMaker() {
+	public static String getDeviceManufacturer() {
 		return Build.MANUFACTURER;
 	}
 

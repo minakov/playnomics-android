@@ -554,7 +554,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo());
 			userInfoEvent.setAppVersion(contextWrapper.getApplicationVersionName());
 			userInfoEvent.setDeviceModel(Util.getDeviceModel());
-			userInfoEvent.setDeviceMaker(Util.getDeviceMaker());
+			userInfoEvent.setDeviceManufacturer(Util.getDeviceManufacturer());
 			userInfoEvent.setDeviceOSVersion(Util.getAndroidOSVersion());
 			try {
 				eventQueue.enqueueEvent(userInfoEvent);

@@ -34,7 +34,7 @@ public interface IConfig {
 
 	public String getDeviceModelKey();
 
-	public String getDeviceMakerKey();
+	public String getDeviceManufacturerKey();
 
 	public String getDeviceOSVersionKey();
 

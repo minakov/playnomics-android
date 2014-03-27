@@ -84,8 +84,8 @@ public class Config implements IConfig {
 		return "model";
 	}
 
-	public String getDeviceMakerKey() {
-		return "maker";
+	public String getDeviceManufacturerKey() {
+		return "manufacturer";
 	}
 
 	public String getDeviceOSVersionKey() {
