@@ -379,6 +379,13 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.3.0
+* Added support for USS (User Segmentation feature)
+* Added UserInfo when app version changes and OS version, device model info.
+* Added setUserGender and setUserBirthYear
+* Changed sending of AppRunning from every 1 minute to (1, 2, 4, 8, 15, 15, ...,15, 15) minutes
+* Fixed NullPointerException when connection or url is null.
+
 #### Version 1.2.2
 * Fix for Application Not Responding error when pausing Activity with no network connectivity.
 
