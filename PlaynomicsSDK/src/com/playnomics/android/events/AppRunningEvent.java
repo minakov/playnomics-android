@@ -7,11 +7,11 @@ public class AppRunningEvent extends ImplicitEvent {
 
 	public AppRunningEvent(IConfig config, GameSessionInfo sessionInfo,
 			LargeGeneratedId instanceId, EventTime sessionStartTime,
-			int sequenceNumber, int touches, int totalTouches) {
+			int sequenceNumber, int touches, int totalTouches,
+			int delayInMinutes) {
 		super(config, sessionInfo, instanceId);
 
-		final int updateTimeIntervalMilliseconds = config
-				.getAppRunningIntervalMilliseconds();
+		final int updateTimeIntervalMilliseconds = delayInMinutes*60*1000;
 		final int keysPressed = 0;
 		final int totalKeysPressed = 0;
 		final int collectionMode = config.getCollectionMode();

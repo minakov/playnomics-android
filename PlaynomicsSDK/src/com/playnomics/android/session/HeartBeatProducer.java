@@ -44,6 +44,10 @@ public class HeartBeatProducer implements IHeartBeatProducer {
 		return (delayIndex!=0);
 	}
 
+	public int getHeartBeatIntervalInMinutes() {
+		return heartBeatIntervals[delayIndex];
+	}
+
     private Handler mHandler = new Handler() { 
         @Override 
         public void handleMessage(Message msg) { 

@@ -379,6 +379,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.3.1
+* Fixed AppRunning ‘d’ interval in milliseconds to reflect (1, 2, 4, 8, 15, 15, ...,15, 15).
+
 #### Version 1.3.0
 * Added support for USS (User Segmentation feature)
 * Added UserInfo when app version changes and OS version, device model info.

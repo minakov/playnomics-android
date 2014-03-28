@@ -55,9 +55,10 @@ public class AppRunningEventTest extends PlaynomicsEventTest {
 
 		int keysPressed = 0;
 		int totalKeysPressed = 0;
+		int delayInMinutes = 1;
 
 		AppRunningEvent event = new AppRunningEvent(config, sessionInfo,
-				instanceId, startTime, sequenceNumber, touches, totalTouches);
+				instanceId, startTime, sequenceNumber, touches, totalTouches, delayInMinutes);
 		testCommonEventParameters(config, event, sessionInfo);
 
 		Map<String, Object> params = event.getEventParameters();
@@ -72,6 +73,6 @@ public class AppRunningEventTest extends PlaynomicsEventTest {
 		assertEquals("Capture mode is set", config.getCollectionMode(),
 				params.get("m"));
 		assertEquals("Interval is set",
-				config.getAppRunningIntervalMilliseconds(), params.get("d"));
+				delayInMinutes*60*1000, params.get("d"));
 	}
 }

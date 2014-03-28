@@ -7,4 +7,6 @@ public interface IHeartBeatProducer {
 	public void stop();
 
 	public boolean isRunningForLongTime();
+	
+	public int getHeartBeatIntervalInMinutes();
 }

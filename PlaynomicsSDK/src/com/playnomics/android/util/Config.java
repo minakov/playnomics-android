@@ -199,14 +199,6 @@ public class Config implements IConfig {
 	public String getMilestoneNameKey() {
 		return "mn";
 	}
-
-	public int getAppRunningIntervalSeconds() {
-		return 60;
-	}
-
-	public int getAppRunningIntervalMilliseconds() {
-		return getAppRunningIntervalSeconds() * 1000;
-	}
 	
 	public int getAppPauseTimeoutMinutes(){
 		return 30;

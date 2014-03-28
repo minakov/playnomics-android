@@ -292,7 +292,8 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			sessionPauseTime = new EventTime();
 			AppPauseEvent event = new AppPauseEvent(config, getSessionInfo(),
 					instanceId, sessionStartTime, sequence.get(),
-					touchEvents.get(), allTouchEvents.get());
+					touchEvents.get(), allTouchEvents.get(),
+					producer.getHeartBeatIntervalInMinutes());
 			sequence.incrementAndGet();
 			eventQueue.enqueueEvent(event);
 			eventWorker.stop();
@@ -356,7 +357,8 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			sequence.incrementAndGet();
 			AppRunningEvent event = new AppRunningEvent(config,
 					getSessionInfo(), instanceId, sessionStartTime,
-					sequence.get(), touchEvents.get(), allTouchEvents.get());
+					sequence.get(), touchEvents.get(), allTouchEvents.get(),
+					producer.getHeartBeatIntervalInMinutes());
 			eventQueue.enqueueEvent(event);
 			//reset the touch events
 			touchEvents.set(0);

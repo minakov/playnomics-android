@@ -55,9 +55,10 @@ public class AppPauseEventTest extends PlaynomicsEventTest {
 
 		int keysPressed = 0;
 		int totalKeysPressed = 0;
+		int delayInMinutes = 1;
 
 		AppPauseEvent event = new AppPauseEvent(config, sessionInfo,
-				instanceId, startTime, sequenceNumber, touches, totalTouches);
+				instanceId, startTime, sequenceNumber, touches, totalTouches, delayInMinutes);
 		testCommonEventParameters(config, event, sessionInfo);
 
 		Map<String, Object> params = event.getEventParameters();
@@ -71,7 +72,7 @@ public class AppPauseEventTest extends PlaynomicsEventTest {
 		assertEquals("Session start time is set", startTime, params.get("r"));
 		assertEquals("Capture mode is set", config.getCollectionMode(),
 				params.get("m"));
-		assertEquals("Interval is set",
-				config.getAppRunningIntervalMilliseconds(), params.get("d"));
+		assertEquals("Interval is set in millseconds",
+				delayInMinutes*60*1000, params.get("d"));
 	}
 }

@@ -87,10 +87,6 @@ public interface IConfig {
 	public String getTransactionCurrencyCategoryFormatKey();
 
 	public String getMilestoneNameKey();
-
-	public int getAppRunningIntervalSeconds();
-
-	public int getAppRunningIntervalMilliseconds();
 	
 	public int getAppPauseTimeoutMinutes();
 

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.playnomics.android</groupId>
 	<artifactId>playnomics-android-sdk</artifactId>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 	<build>
 		<sourceDirectory>target/filtered-sources</sourceDirectory>
 		 <!-- Configure the source files as resources to be filtered into a custom target directory -->
