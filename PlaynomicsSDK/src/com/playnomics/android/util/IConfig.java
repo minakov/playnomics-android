@@ -125,4 +125,6 @@ public interface IConfig {
 	public String getCacheFileName();
 	
 	public String getUserSegmentsPath();
+
+	public int[] getHeartBeatIntervalInMinutes();
 }

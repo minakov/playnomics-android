@@ -2,26 +2,26 @@ package com.playnomics.android.session;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.playnomics.android.util.IConfig;
+
 import android.os.Handler;
 import android.os.Message;
 
 public class HeartBeatProducer implements IHeartBeatProducer {
 	private static final int MSG_HEART_BEAT = 0xBEA1; 
-	private static final long HEART_BEAT_DELAY_IN_MILL = 60*1000;
-	private static final long MAX_HEART_BEAT_DELAY_IN_MILL = HEART_BEAT_DELAY_IN_MILL*15;
 
-	private long startIntervalInMillSeconds = HEART_BEAT_DELAY_IN_MILL;
-	private long heartbeatIntervalInMillSeconds = HEART_BEAT_DELAY_IN_MILL;
 	private AtomicBoolean started;
 	private HeartBeatHandler heartBeatHandler;
+	private int delayIndex = 0;
+	private int[] heartBeatIntervals;
 
 	public HeartBeatProducer() {
 		this.started = new AtomicBoolean(false);
 	}
 
-	public HeartBeatProducer(long startIntervalInMillSeconds) {
+	public HeartBeatProducer(IConfig config) {
 		this.started = new AtomicBoolean(false);
-		this.startIntervalInMillSeconds = startIntervalInMillSeconds;
+		this.heartBeatIntervals = config.getHeartBeatIntervalInMinutes();
 	}
 
 	public void start(final HeartBeatHandler handler) {
@@ -29,7 +29,8 @@ public class HeartBeatProducer implements IHeartBeatProducer {
 			return;
 		}
 		heartBeatHandler = handler;
-		setHeartBeatTimer(startIntervalInMillSeconds);
+		delayIndex = 0;
+		setHeartBeatTimer(heartBeatIntervals[delayIndex]);
 	}
 
 	public void stop() {
@@ -40,7 +41,7 @@ public class HeartBeatProducer implements IHeartBeatProducer {
 	}
 
 	public boolean isRunningForLongTime() {
-		return (heartbeatIntervalInMillSeconds!=startIntervalInMillSeconds);
+		return (delayIndex!=0);
 	}
 
     private Handler mHandler = new Handler() { 
@@ -58,24 +59,21 @@ public class HeartBeatProducer implements IHeartBeatProducer {
     };
 
     private void HandleHeartBeat() {
-    	setHeartBeatTimer(getNextEventTimeDelay());
-    	heartBeatHandler.onHeartBeat(heartbeatIntervalInMillSeconds);
+    	int delayInMillSeconds = heartBeatIntervals[delayIndex]*60*1000;
+    	setHeartBeatTimer(getNextDelayInMinutes());
+    	heartBeatHandler.onHeartBeat(delayInMillSeconds);
     }
  
-	private void setHeartBeatTimer(long delay) {
-		heartbeatIntervalInMillSeconds = delay;
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_HEART_BEAT), heartbeatIntervalInMillSeconds); 
-    } 
- 
-	private long getNextEventTimeDelay() {
-	    if (heartbeatIntervalInMillSeconds>=MAX_HEART_BEAT_DELAY_IN_MILL)
-	        return heartbeatIntervalInMillSeconds;
+	private void setHeartBeatTimer(long delayInMinutes) {
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_HEART_BEAT), delayInMinutes*60*1000); 
+    }
 
-	    long delay = (heartbeatIntervalInMillSeconds*2);
-	    if (delay<MAX_HEART_BEAT_DELAY_IN_MILL)
-	        return delay;
-
-	    return MAX_HEART_BEAT_DELAY_IN_MILL;
+	private int getNextDelayInMinutes() {
+		int nextIndex = delayIndex + 1;
+		if (nextIndex<heartBeatIntervals.length) {
+			delayIndex = nextIndex;
+	    }
+		return heartBeatIntervals[delayIndex];
 	}
 
 }

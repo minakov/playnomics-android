@@ -52,7 +52,7 @@ public class Playnomics {
 				IEventWorker eventWorker = new EventWorker(eventQueue,
 						connectionFactory, logger);
 				IActivityObserver activityObserver = new ActivityObserver(util);
-				IHeartBeatProducer heartbeatProducer = new HeartBeatProducer();
+				IHeartBeatProducer heartbeatProducer = new HeartBeatProducer(config);
 				HtmlAdFactory adFactory = new HtmlAdFactory(logger);
 				AssetClient assetClient = new AssetClient(connectionFactory, logger);
 				PlacementDataClient placementDataClient = new PlacementDataClient(

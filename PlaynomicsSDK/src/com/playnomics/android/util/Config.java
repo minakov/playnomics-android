@@ -275,5 +275,10 @@ public class Config implements IConfig {
 	public String getUserSegmentsPath() {
 		return "userSegments";
 	}
+
+	private int[] heartBeatIntervalInMinutes = {1, 2, 4, 8, 15};
+	public int[] getHeartBeatIntervalInMinutes() {
+		return heartBeatIntervalInMinutes;
+	}
 }
 
