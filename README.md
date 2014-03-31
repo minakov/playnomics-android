@@ -225,6 +225,12 @@ Full Integration
             <a href="#custom-event-tracking">Custom Event Tracking</a>
         </li>
         <li>
+            <a href="#user-information">User Information</a>
+        </li>
+        <li>
+            <a href="#user-segmentation">User Segmentation</a>
+        </li>
+        <li>
             <a href="#push-notifications">Push Notifications</a>
         </li>
         <li>
@@ -366,6 +372,93 @@ Example client-side calls for a user reaching a event, with generated IDs:
 ```objectivec
 String eventName = "level 1 complete";
 Playnomics.customEvent(eventName);
+```
+
+## User Information
+
+Specify user information like gender and birth year.
+
+####User Gender:
+
+```java
+public static void setUserGender(String gender);
+```
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>gender</code></td>
+            <td>String</td>
+            <td>
+                Specify user gender Female/Male.
+                <br>Must be exactly “F”, “M”, or “U” (lowercase accepted)
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+Example client-side calls for setting user gender:
+
+```objectivec
+String gender = "F";
+Playnomics.setUserGender(gender);
+```
+
+
+####User Birth Year:
+
+```java
+public static void setUserBirthYear(int birthYear);
+```
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>birthYear</code></td>
+            <td>int</td>
+            <td>
+                Specify user birth year.
+                <br>Must be year in 4 digit format.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+Example client-side calls for setting user birth year:
+
+```objectivec
+int birthYear = 2014;
+Playnomics.setUserBirthYear(birthYear);
+```
+
+## User Segmentation
+
+Each user is placed in zero or more segments. To retrieve the segmentation Ids for a user call the method below.
+
+```java
+public static void fetchUserSegmentIds(final IPlaynomicsSegmentationDelegate delegate);
+```
+
+Using an implementation of `IPlaynomicsSegmentationDelegate` your application can receive notifications once the segmentation Ids are fetched.
+
+```java
+public interface IPlaynomicsSegmentationDelegate {
+    public void onFetchedUserSegmentIds(List<Long> segmentationIds);
+
+    public void onFetchedUserSegmentIdsError(String error, String description);
+}
 ```
 
 Push Notifications
