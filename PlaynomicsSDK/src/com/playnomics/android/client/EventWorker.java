@@ -76,7 +76,11 @@ public class EventWorker implements IEventWorker {
 	private void doWork() {
 		while (running.get()) {
 			while (!eventQueue.isEmpty() && running.get()) {
-				String url = eventQueue.dequeueEventUrl();
+				String url = null;
+				try {
+					url = eventQueue.dequeueEventUrl();
+				} catch(java.util.NoSuchElementException ex) {
+				}
 				if (url==null)
 					break;
 
