@@ -472,6 +472,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.3.2
+* Fixed Crash in EventWorker and added robolectric for Android Unit test.
+
 #### Version 1.3.1
 * Fixed AppRunning ‘d’ interval in milliseconds to reflect (1, 2, 4, 8, 15, 15, ...,15, 15).
 
