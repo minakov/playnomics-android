@@ -28,6 +28,7 @@ import android.content.Context;
 import com.playnomics.android.client.HttpConnectionFactory;
 import com.playnomics.android.client.IEventWorker;
 import com.playnomics.android.client.StubEventQueue;
+import com.playnomics.android.client.StubEventWorker;
 import com.playnomics.android.events.AppPageEvent;
 import com.playnomics.android.events.AppPauseEvent;
 import com.playnomics.android.events.AppResumeEvent;
@@ -72,8 +73,6 @@ public class SessionTest {
 	@Mock
 	private IActivityObserver observerMock;
 	@Mock
-	private IEventWorker eventWorker;
-	@Mock
 	private Activity activityMock;
 	@Mock
 	private MessagingManager messagingManagerMock;
@@ -93,6 +92,7 @@ public class SessionTest {
 	
 	private Session session;
 	private StubEventQueue eventQueue;
+	private StubEventWorker eventWorker;
 	private Config config;
 	
 	@BeforeClass
@@ -113,11 +113,13 @@ public class SessionTest {
 		when(utilMock.getDeviceIdFromContext(contextMock)).thenReturn(deviceId);
 
 		eventQueue = new StubEventQueue();
+		eventWorker = new StubEventWorker();
+		eventWorker.setEventQueue(eventQueue);
 
 		config = spy(new Config());
 		Logger logger = new Logger(new UnitTestLogWriter());
 		session = new Session(config, utilMock, factoryMock, logger,
-				eventQueue, eventWorker, observerMock, producerMock,
+				eventWorker, observerMock, producerMock,
 				messagingManagerMock, cacheFileMock);
 	}
 
@@ -200,7 +202,7 @@ public class SessionTest {
 
 		verify(producerMock).start(session);
 		verify(observerMock).setStateMachine(session);
-		verify(eventWorker).start();
+		eventWorker.start();
 	}
 
 	@Test
@@ -292,7 +294,7 @@ public class SessionTest {
 
 		verify(producerMock).start(session);
 		verify(observerMock).setStateMachine(session);
-		verify(eventWorker).start();
+		eventWorker.start();
 	}
 
 	@Test
@@ -389,20 +391,20 @@ public class SessionTest {
 		Set<String> unprocessedUrls = new HashSet<String>();
 		unprocessedUrls.add(url);
 		
-		when(eventWorker.getAllUnprocessedEvents()).thenReturn(unprocessedUrls);
-		
+		eventWorker.setAllUnprocessedEvents(unprocessedUrls);
+
 		session.pause();
 		verify(producerMock).stop();
-		verify(eventWorker).stop();
+		eventWorker.stop();
 		verify(cacheFileMock).writeSetToFile(unprocessedUrls);
 
 		when(cacheFileMock.readSetFromFile(any(ICacheFileHandler.class))).thenReturn(readTaskMock);
 		
 		session.resume();
 		verify(producerMock, Mockito.atMost(2)).start(session);
-		verify(eventWorker, Mockito.atMost(2)).start();
+		eventWorker.start();
 		verify(utilMock).startTaskOnBackgroundThread(readTaskMock);
-		
+
 		Object pauseEvent = eventQueue.queue.remove();
 		assertTrue("Pause event queued", pauseEvent instanceof AppPauseEvent);
 		Object resumeEvent = eventQueue.queue.remove();
@@ -430,7 +432,7 @@ public class SessionTest {
 		Set<String> unprocessedUrls = new HashSet<String>();
 		unprocessedUrls.add(url);
 		
-		when(eventWorker.getAllUnprocessedEvents()).thenReturn(unprocessedUrls);
+		eventWorker.setAllUnprocessedEvents(unprocessedUrls);
 		
 		session.pause();
 		session.resume();

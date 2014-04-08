@@ -15,8 +15,10 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import com.playnomics.android.events.CustomEvent;
 import com.playnomics.android.session.GameSessionInfo;
@@ -27,6 +29,7 @@ import com.playnomics.android.util.UnitTestLogWriter;
 import com.playnomics.android.util.Util;
 
 
+@RunWith(RobolectricTestRunner.class)
 public class EventWorkerTest {
 	
 	@Mock 
@@ -34,7 +37,6 @@ public class EventWorkerTest {
 	@Mock 
 	private HttpConnectionFactory factoryMock;
 	
-	private EventQueue queue;
 	private EventWorker worker;
 	private GameSessionInfo sessionInfo;
 	private CustomEvent event;
@@ -59,8 +61,7 @@ public class EventWorkerTest {
 		Logger logger = new Logger(new UnitTestLogWriter());
 		Config config = new Config();
 		Util util = new Util(logger);
-		queue = new EventQueue(config, factoryMock);
-		worker = new EventWorker(queue, factoryMock, logger);
+		worker = new EventWorker(config, factoryMock, logger);
 		
 		sessionInfo = new GameSessionInfo(1L, "userId", "breadcrumbId", new LargeGeneratedId(10L));
 		event = new CustomEvent(config, util, sessionInfo, "my event");
@@ -73,7 +74,7 @@ public class EventWorkerTest {
 	@Test
 	public void testRequestSuccesses() throws IOException, InterruptedException {
 		when(connectionMock.getResponseCode()).thenReturn(200);
-		queue.enqueueEvent(event);
+		worker.enqueueEvent(event);
 		worker.start();
 		Thread.sleep(1500);
 		worker.stop();
@@ -84,10 +85,11 @@ public class EventWorkerTest {
 	@Test()
 	public void testRequestThrowsException() throws InterruptedException, IOException{
 		when(connectionMock.getResponseCode()).thenThrow(new IOException());
-		queue.enqueueEvent(event);
+		worker.enqueueEvent(event);
 		worker.start();
 		Thread.sleep(1500);
-		
+		worker.stop();
+
 		assertFalse("Worker has been stopped", worker.isRunning());
 		Set<String> unprocessed = worker.getAllUnprocessedEvents();
 		assertFalse("Unprocessed is not empty", unprocessed.isEmpty());

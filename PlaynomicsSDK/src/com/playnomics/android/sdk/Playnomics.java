@@ -6,10 +6,8 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.playnomics.android.client.AssetClient;
-import com.playnomics.android.client.EventQueue;
 import com.playnomics.android.client.EventWorker;
 import com.playnomics.android.client.HttpConnectionFactory;
-import com.playnomics.android.client.IEventQueue;
 import com.playnomics.android.client.IEventWorker;
 import com.playnomics.android.client.PlacementDataClient;
 import com.playnomics.android.messaging.HtmlAdFactory;
@@ -47,9 +45,7 @@ public class Playnomics {
 						logger);
 				IConfig config = new Config();
 				Playnomics.util = new Util(logger);
-				IEventQueue eventQueue = new EventQueue(config,
-						connectionFactory);
-				IEventWorker eventWorker = new EventWorker(eventQueue,
+				IEventWorker eventWorker = new EventWorker(config,
 						connectionFactory, logger);
 				IActivityObserver activityObserver = new ActivityObserver(util);
 				IHeartBeatProducer heartbeatProducer = new HeartBeatProducer(config);
@@ -64,7 +60,7 @@ public class Playnomics {
 				
 				CacheFile cacheFile = new CacheFile(util, config);
 				instance = new Session(config, util, connectionFactory, logger,
-						eventQueue, eventWorker, activityObserver,
+						eventWorker, activityObserver,
 						heartbeatProducer, messagingManager, cacheFile);
 			}
 			return instance;

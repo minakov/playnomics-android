@@ -123,4 +123,8 @@ public interface IConfig {
 	public String getUserSegmentsPath();
 
 	public int[] getHeartBeatIntervalInMinutes();
+
+	public int getQueHttpErrorTimeoutInSeconds();
+
+	public int getQueEmptyTimeoutInMilliseconds();
 }

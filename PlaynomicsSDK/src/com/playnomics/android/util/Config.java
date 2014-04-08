@@ -272,5 +272,13 @@ public class Config implements IConfig {
 	public int[] getHeartBeatIntervalInMinutes() {
 		return heartBeatIntervalInMinutes;
 	}
+
+	public int getQueHttpErrorTimeoutInSeconds() {
+		return 60*2;
+	}
+
+	public int getQueEmptyTimeoutInMilliseconds() {
+		return 1000;
+	}
 }
 

@@ -11,7 +11,6 @@ import android.app.Activity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.playnomics.android.client.IEventQueue;
 import com.playnomics.android.client.IEventWorker;
 import com.playnomics.android.client.IHttpConnectionFactory;
 import com.playnomics.android.client.SegmentationClient;
@@ -62,7 +61,6 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 
 	private Logger logger;
 	private IEventWorker eventWorker;
-	private IEventQueue eventQueue;
 	private Util util;
 	private IConfig config;
 	private ContextWrapper contextWrapper;
@@ -138,14 +136,13 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	
 	public Session(IConfig config, Util util,
 			IHttpConnectionFactory connectionFactory, Logger logger,
-			IEventQueue eventQueue, IEventWorker eventWorker,
+			IEventWorker eventWorker,
 			IActivityObserver activityObserver, IHeartBeatProducer producer,
 			MessagingManager messagingManager, CacheFile cacheFile) {
 		this.logger = logger;
 		this.sessionState = SessionState.NOT_STARTED;
 		this.util = util;
 		this.config = config;
-		this.eventQueue = eventQueue;
 		this.eventWorker = eventWorker;
 		this.observer = activityObserver;
 		this.producer = producer;
@@ -248,7 +245,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				sessionStartTime = contextWrapper.getLastSessionStartTime();
 			}
 
-			eventQueue.enqueueEvent(implicitEvent);
+			eventWorker.enqueueEvent(implicitEvent);
 
 			lookForVersionChange();
 
@@ -270,7 +267,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			eventWorker.start();
 			producer.start(this);
 			observer.setStateMachine(this);
-			
+
 			cacheFile.setContext(contextWrapper.getContext());			
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not start session");
@@ -295,7 +292,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					touchEvents.get(), allTouchEvents.get(),
 					producer.getHeartBeatIntervalInMinutes());
 			sequence.incrementAndGet();
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 			eventWorker.stop();
 
 			Set<String> unprocessUrls = eventWorker.getAllUnprocessedEvents();
@@ -329,7 +326,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			AppResumeEvent event = new AppResumeEvent(config, getSessionInfo(),
 					instanceId, sessionStartTime, sessionPauseTime,
 					sequence.get());
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 			eventWorker.start();
 			producer.start(this);
 			
@@ -337,7 +334,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 				public void onReadSetComplete(Set<String> data) {
 					if(data != null){
 						for(String url : data){
-							eventQueue.enqueueEventUrl(url);
+							eventWorker.enqueueEventUrl(url);
 						}
 					}
 				}
@@ -359,7 +356,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 					getSessionInfo(), instanceId, sessionStartTime,
 					sequence.get(), touchEvents.get(), allTouchEvents.get(),
 					producer.getHeartBeatIntervalInMinutes());
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 			//reset the touch events
 			touchEvents.set(0);
 			//update the last event time
@@ -394,7 +391,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			assertSessionStarted("transactionInUSD");
 			TransactionEvent event = new TransactionEvent(config, util,
 					getSessionInfo(), quantity, priceInUSD);
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not send transaction");
 		}
@@ -406,7 +403,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			assertSessionStarted("attributeInstall");
 			UserInfoEvent event = new UserInfoEvent(config, getSessionInfo(),
 					source, campaign, installDate);
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex,
 					"Could not send install attribution information");
@@ -418,7 +415,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			assertSessionStarted("customEvent");
 			CustomEvent event = new CustomEvent(config, util, getSessionInfo(),
 					customEventName);
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not send custom event");
 		}
@@ -446,7 +443,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	}
 
 	public void processUrlCallback(String url) {
-		eventQueue.enqueueEventUrl(url);
+		eventWorker.enqueueEventUrl(url);
 	}
 	
 	public void fetchUserSegmentIds(final IPlaynomicsSegmentationDelegate delegate) {
@@ -460,7 +457,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			UserInfoEvent event = new UserInfoEvent(config,
 					getSessionInfo());
 			event.setGender(gender);
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not send user gender");
 		}
@@ -472,7 +469,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			UserInfoEvent event = new UserInfoEvent(config,
 					getSessionInfo());
 			event.setBirthYear(year);
-			eventQueue.enqueueEvent(event);
+			eventWorker.enqueueEvent(event);
 		} catch (Exception ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not send user birth year");
 		}
@@ -522,7 +519,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			notificationDelegate.onPushRegistrationSuccess(registrationId);
 			
 			UserInfoEvent userInfoEvent = new UserInfoEvent(config, getSessionInfo(), registrationId);
-			eventQueue.enqueueEvent(userInfoEvent);
+			eventWorker.enqueueEvent(userInfoEvent);
 			
 		} catch (UnsupportedEncodingException ex) {
 			logger.log(LogLevel.ERROR, ex, "Could not send pushRegistrationId to server %s", registrationId);
@@ -559,7 +556,7 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 			userInfoEvent.setDeviceManufacturer(Util.getDeviceManufacturer());
 			userInfoEvent.setDeviceOSVersion(Util.getAndroidOSVersion());
 			try {
-				eventQueue.enqueueEvent(userInfoEvent);
+				eventWorker.enqueueEvent(userInfoEvent);
 			} catch (UnsupportedEncodingException e) {
 			}
 		}
