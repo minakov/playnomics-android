@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.playnomics.android.sdk.IGoogleCloudMessageConfig;
+import com.playnomics.android.util.AsyncTaskRunner;
+import com.playnomics.android.util.IAsyncCall;
 import com.playnomics.android.util.Logger;
 import com.playnomics.android.util.Util;
 
@@ -29,20 +31,39 @@ public class GcmManager {
 		GcmManager.messagingHandler = messagingHandler;
 		GcmManager.config = provider;
 	}
-	
-	public Runnable createRegistrationTask(final Context context){
-		return new Runnable(){
-			@Override
-			public void run() {
-				try{
-					GoogleCloudMessaging gcm = util.getGCMFromContext(context);
-					String registrationId = gcm.register(config.getSenderId());
-					messagingHandler.onDeviceRegistered(registrationId);
-				} catch(Exception ex){
-					messagingHandler.onDeviceRegistrationFailed(ex);
-				}
+
+	private class AyncRegistrationGCM implements IAsyncCall {
+		private String registrationId;
+		private Exception exception;
+		private Context context;
+
+		public AyncRegistrationGCM(final Context context) {
+			this.context = context;
+		}
+
+		@Override
+		public void onBackgroundThread() {
+			try{
+				GoogleCloudMessaging gcm = util.getGCMFromContext(context);
+				registrationId = gcm.register(config.getSenderId());
+			} catch(Exception ex){
+				exception = ex;
 			}
-		};
+		}
+
+		@Override
+		public void postExecuteOnUiThread() {
+			if (exception==null) {
+				messagingHandler.onDeviceRegistered(registrationId);
+			} else {
+				messagingHandler.onDeviceRegistrationFailed(exception);
+			}
+		}
+	}
+
+	public void preformRegistration(final Context context) {
+		AsyncTaskRunner pushRegistrationTask = new AsyncTaskRunner(new AyncRegistrationGCM(context));
+		pushRegistrationTask.execute();
 	}
 
 	static void onPushNotificationOpened(String pushInteractedUrl){

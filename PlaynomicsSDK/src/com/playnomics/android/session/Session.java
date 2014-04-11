@@ -40,6 +40,7 @@ import com.playnomics.android.util.LargeGeneratedId;
 import com.playnomics.android.util.Logger;
 import com.playnomics.android.util.Logger.LogLevel;
 import com.playnomics.android.util.Util;
+import com.playnomics.android.util.AsyncTaskRunner;
 
 public class Session implements SessionStateMachine, TouchEventHandler,
 		HeartBeatHandler, ICallbackProcessor, ICloudMessagingHandler {
@@ -154,40 +155,39 @@ public class Session implements SessionStateMachine, TouchEventHandler,
 	}
 	
 	public void enablePushNotifications(IPushConfig pushConfig, IPushNotificationDelegate notificationDelegate){
-		try{		
-			this.notificationDelegate = notificationDelegate;
-			
-			if(pushConfig instanceof IGoogleCloudMessageConfig){			
-				IGoogleCloudMessageConfig gcmConfig = (IGoogleCloudMessageConfig) pushConfig;
-				if(util.isGooglePlaySdkAvailable()){
-					//Google Cloud Messaging;
-					GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
-					
-					if(contextWrapper.pushSettingsOutdated()){
-						//settings are out-dated, so we need to get a new registration ID
-						int resultCode = util.getGooglePlayServiceStatus(contextWrapper.getContext());
-						
-						if (resultCode != ConnectionResult.SUCCESS) {
-					    	if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-					    		logger.log(LogLevel.WARNING, "Google Play Services are not up-to-date on this device.");
-					    		notificationDelegate.onPushRegistrationFailure(resultCode);
-					        } else {
-					            logger.log(LogLevel.ERROR, "Google Play Services are not available on this device.");
-					            notificationDelegate.onPushRegistrationFailure();
-					        }
-					    	return;
-					    }
-						
-						Runnable pushRegistrationTask = manager.createRegistrationTask(contextWrapper.getContext());
-						util.startTaskOnBackgroundThread(pushRegistrationTask);
-					}
+		this.notificationDelegate = notificationDelegate;
+		if(	(pushConfig instanceof IGoogleCloudMessageConfig) == false )
+			return;
+
+		if(	(util.isGooglePlaySdkAvailable() == false) ||
+			(contextWrapper.pushSettingsOutdated() == false) ) {
+			return;
+		}
+
+		try{
+			IGoogleCloudMessageConfig gcmConfig = (IGoogleCloudMessageConfig) pushConfig;
+			//Google Cloud Messaging;
+			GcmManager manager = new GcmManager(logger, util, this, gcmConfig);
+			//settings are out-dated, so we need to get a new registration ID
+			int resultCode = util.getGooglePlayServiceStatus(contextWrapper.getContext());
+
+			if (resultCode != ConnectionResult.SUCCESS) {
+				if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+					logger.log(LogLevel.WARNING, "Google Play Services are not up-to-date on this device.");
+					notificationDelegate.onPushRegistrationFailure(resultCode);
+				} else {
+					logger.log(LogLevel.ERROR, "Google Play Services are not available on this device.");
+					notificationDelegate.onPushRegistrationFailure();
 				}
+				return;
 			}
+
+			manager.preformRegistration(contextWrapper.getContext());
 		} catch(Exception ex){
 			logger.log(LogLevel.ERROR, ex, "Could not enable push notifications");
 		}
 	}
-	
+
 	public void start(ContextWrapper contextWrapper, Long applicationId, String userId) {
 		try {
 			if (getSessionState() == SessionState.STARTED || getSessionState() == SessionState.PAUSED) {
