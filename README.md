@@ -231,9 +231,6 @@ Full Integration
             <a href="#user-segmentation">User Segmentation</a>
         </li>
         <li>
-            <a href="#push-notifications">Push Notifications</a>
-        </li>
-        <li>
             <a href="https://github.com/playnomics/playnomics-android/wiki/Rich-Data-Callbacks">
                 Rich Data Callbacks
             </a>
@@ -460,11 +457,6 @@ public interface IPlaynomicsSegmentationDelegate {
     public void onFetchedUserSegmentIdsError(String error, String description);
 }
 ```
-
-Push Notifications
-==================
-
-To set up push notifications, please view the [wiki page](https://github.com/playnomics/playnomics-android/wiki/Push-Notifications-for-Android).
 
 Support Issues
 ==============
