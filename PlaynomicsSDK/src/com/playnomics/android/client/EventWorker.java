@@ -130,6 +130,9 @@ public class EventWorker implements IEventWorker {
 		} catch (IOException ex) {
 			logger.log(LogLevel.WARNING, ex,
 					"Could not connext to the event API.", url);
+		} catch (NullPointerException ex) {
+			logger.log(LogLevel.WARNING, ex,
+					"Could not connext to the event API.", url);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
