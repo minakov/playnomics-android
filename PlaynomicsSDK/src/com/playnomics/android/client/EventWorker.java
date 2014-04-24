@@ -61,10 +61,6 @@ public class EventWorker implements IEventWorker {
 			return;
 		}
 
-		if (connection != null) {
-			connection.disconnect();
-			connection = null;
-		}
 		startComplete.set(false);
 		handerThread.quit();
 		handerThread.interrupt();
