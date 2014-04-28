@@ -464,6 +464,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.3.4
+* Fixed ANR in EventWorker.stop coz of lockup in HttpsURLConnectionImpl.disconnect.
+
 #### Version 1.3.3
 * Fixed NullPointerException crash in EventWoker HttpsURLConnectionImpl.getResponseCode.
 
