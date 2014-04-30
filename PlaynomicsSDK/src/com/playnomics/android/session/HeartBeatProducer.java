@@ -6,6 +6,7 @@ import com.playnomics.android.util.IConfig;
 
 import android.os.Handler;
 import android.os.Message;
+import android.os.Looper;
 
 public class HeartBeatProducer implements IHeartBeatProducer {
 	private static final int MSG_HEART_BEAT = 0xBEA1; 
@@ -48,7 +49,7 @@ public class HeartBeatProducer implements IHeartBeatProducer {
 		return heartBeatIntervals[delayIndex];
 	}
 
-    private Handler mHandler = new Handler() { 
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override 
         public void handleMessage(Message msg) { 
             switch (msg.what) { 
