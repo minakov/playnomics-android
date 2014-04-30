@@ -40,7 +40,6 @@ import com.playnomics.android.util.LargeGeneratedId;
 import com.playnomics.android.util.Logger;
 import com.playnomics.android.util.Logger.LogLevel;
 import com.playnomics.android.util.Util;
-import com.playnomics.android.util.AsyncTaskRunner;
 
 public class Session implements SessionStateMachine, TouchEventHandler,
 		HeartBeatHandler, ICallbackProcessor, ICloudMessagingHandler {
