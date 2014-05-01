@@ -3,6 +3,9 @@ package com.playnomics.android.session;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import com.playnomics.android.util.Util;
 
@@ -45,8 +48,16 @@ public class ActivityObserver implements IActivityObserver {
 	public void forgetLastActivity() {
 		Activity activity = activities.remove();
 		util.removeWindowCallback(activity);
-		if (activities.isEmpty()) {
-			stateMachine.pause();
-		}
+		mHandler.sendEmptyMessageDelayed(0, 500);
 	}
+
+	private Handler mHandler = new Handler(Looper.getMainLooper()) {
+		@Override
+		public void handleMessage(Message msg) {
+			if (activities.isEmpty()) {
+				stateMachine.pause();
+			}
+		}
+	};
+
 }
