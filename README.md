@@ -464,6 +464,9 @@ If you have any questions or issues, please contact <a href="mailto:support@play
 
 Change Log
 ==========
+#### Version 1.3.6
+* Avoiding unnecessary resume and pause events.
+
 #### Version 1.3.5
 * Fixed calling of Playnomics SDK on non-UI threads.
 

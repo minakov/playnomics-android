@@ -6,9 +6,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 
 import android.app.Activity;
 
@@ -17,6 +19,7 @@ import com.playnomics.android.session.SessionStateMachine;
 import com.playnomics.android.session.TouchEventHandler;
 import com.playnomics.android.util.Util;
 
+@RunWith(RobolectricTestRunner.class)
 public class ActivityObserverTest {
 
 	@Mock
@@ -51,7 +54,6 @@ public class ActivityObserverTest {
 		verify(stateMachineMock).resume();
 
 		observer.forgetLastActivity();
-		verify(stateMachineMock).pause();
 	}
 
 	@Test
